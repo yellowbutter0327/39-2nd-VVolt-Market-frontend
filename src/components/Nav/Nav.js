@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function Nav() {
-  return 0;
+  return <h1>Nav</h1>;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function Store() {
-  return 0;
+  return <h1>Store</h1>;
 }

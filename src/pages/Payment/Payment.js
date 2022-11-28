@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function Payment() {
-  return 0;
+  return <h1>Payment</h1>;
 }

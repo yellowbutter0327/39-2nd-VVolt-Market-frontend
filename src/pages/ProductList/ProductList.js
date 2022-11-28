@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function ProductList() {
-  return 0;
+  return <h1>ProductList</h1>;
 }

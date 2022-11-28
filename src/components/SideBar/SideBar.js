@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function SideBar() {
-  return 0;
+  return <h1>SideBar</h1>;
 }

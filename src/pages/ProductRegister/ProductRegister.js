@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function ProductRegister() {
-  return 0;
+  return <h1>ProductRegister</h1>;
 }
