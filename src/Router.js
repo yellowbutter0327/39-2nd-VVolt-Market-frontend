@@ -4,6 +4,7 @@ import Footer from './components/Footer/Footer';
 import Nav from './components/Nav/Nav';
 import SideBar from './components/SideBar/SideBar';
 import Login from './pages/Login/Login';
+import KakaoLogin from './pages/Login/KakaoLogin';
 import Payment from './pages/Payment/Payment';
 import ProductDetail from './pages/ProductDetail/ProductDetail';
 import ProductList from './pages/ProductList/ProductList';
@@ -19,6 +20,7 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<ProductList />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/users/kakaoLogin" element={<KakaoLogin />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/productdetail" element={<ProductDetail />} />
         <Route path="/productregister" element={<ProductRegister />} />
