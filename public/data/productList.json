@@ -1,0 +1,34 @@
+[
+  {
+    "productId": 1,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "",
+    "location": [120, 11],
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 2,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "",
+    "location": [120, 11],
+    "images": ["/images/product_img_2.jpg"]
+  },
+  {
+    "productId": 3,
+    "productName": "꿀잠 잠옷 세트",
+    "productPrice": 55000,
+    "registerDate": "",
+    "location": [120, 11],
+    "images": ["/images/product_img_3.jpg"]
+  },
+  {
+    "productId": 4,
+    "productName": "남성 자켓",
+    "productPrice": 230000,
+    "registerDate": "",
+    "location": [120, 11],
+    "images": ["/images/product_img_4.jpg"]
+  }
+]
