@@ -1,0 +1,242 @@
+[
+  {
+    "productId": 1,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "2022-12-05 13:08:10",
+    "location": "서울특별시 성북구 돈암동",
+    "lat": 37.588225,
+    "long": 127.005875,
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 2,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "2022-01-30 11:50:10",
+    "location": "서울특별시 종로구 혜화동",
+    "lat": 37.582572,
+    "long": 127.001635,
+    "images": ["/images/product_img_2.jpg"]
+  },
+  {
+    "productId": 3,
+    "productName": "꿀잠 잠옷 세트",
+    "productPrice": 55000,
+    "registerDate": "2022-11-30 11:50:10",
+    "location": "서울특별시 강남구 선릉동",
+    "lat": 37.503816,
+    "long": 127.050721,
+    "images": ["/images/product_img_3.jpg"]
+  },
+  {
+    "productId": 4,
+    "productName": "남성 자켓",
+    "productPrice": 230000,
+    "registerDate": "2022-11-28 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_4.jpg"]
+  },
+  {
+    "productId": 5,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 6,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_2.jpg"]
+  },
+  {
+    "productId": 1,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 성북구 돈암동",
+    "lat": 37.588225,
+    "long": 127.005875,
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 2,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 종로구 혜화동",
+    "lat": 37.582572,
+    "long": 127.001635,
+    "images": ["/images/product_img_2.jpg"]
+  },
+  {
+    "productId": 3,
+    "productName": "꿀잠 잠옷 세트",
+    "productPrice": 55000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 선릉동",
+    "lat": 37.503816,
+    "long": 127.050721,
+    "images": ["/images/product_img_3.jpg"]
+  },
+  {
+    "productId": 4,
+    "productName": "남성 자켓",
+    "productPrice": 230000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_4.jpg"]
+  },
+  {
+    "productId": 5,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 6,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_2.jpg"]
+  },
+  {
+    "productId": 1,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 성북구 돈암동",
+    "lat": 37.588225,
+    "long": 127.005875,
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 2,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 종로구 혜화동",
+    "lat": 37.582572,
+    "long": 127.001635,
+    "images": ["/images/product_img_2.jpg"]
+  },
+  {
+    "productId": 3,
+    "productName": "꿀잠 잠옷 세트",
+    "productPrice": 55000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 선릉동",
+    "lat": 37.503816,
+    "long": 127.050721,
+    "images": ["/images/product_img_3.jpg"]
+  },
+  {
+    "productId": 4,
+    "productName": "남성 자켓",
+    "productPrice": 230000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_4.jpg"]
+  },
+  {
+    "productId": 5,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 6,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_2.jpg"]
+  },
+  {
+    "productId": 1,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 성북구 돈암동",
+    "lat": 37.588225,
+    "long": 127.005875,
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 2,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 종로구 혜화동",
+    "lat": 37.582572,
+    "long": 127.001635,
+    "images": ["/images/product_img_2.jpg"]
+  },
+  {
+    "productId": 3,
+    "productName": "꿀잠 잠옷 세트",
+    "productPrice": 55000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 선릉동",
+    "lat": 37.503816,
+    "long": 127.050721,
+    "images": ["/images/product_img_3.jpg"]
+  },
+  {
+    "productId": 4,
+    "productName": "남성 자켓",
+    "productPrice": 230000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_4.jpg"]
+  },
+  {
+    "productId": 5,
+    "productName": "nike shoose",
+    "productPrice": 120000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_1.jpg"]
+  },
+  {
+    "productId": 6,
+    "productName": "뉴발란스 운동화",
+    "productPrice": 80000,
+    "registerDate": "2022-11-30 12:50:10",
+    "location": "서울특별시 강남구 압구정",
+    "lat": 37.525566,
+    "long": 127.040966,
+    "images": ["/images/product_img_2.jpg"]
+  }
+]

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Autoplay, Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { useSearchParams } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -9,7 +10,100 @@ import 'swiper/css/bundle';
 import ListItem from './ListItem';
 
 const ProductList = () => {
-  const [category, setCategory] = useState('의류'); // 카테고리 변수가 정해지면 searchPrams.get("category")로 변경
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const currentCategory = searchParams.get('category');
+
+  const [category, setCategory] = useState(currentCategory); // 카테고리 변수가 정해지면 searchPrams.get("category")로 변경
+  const [currentLat, setCurrentLat] = useState(37.5062539); //37.5062539 선릉 위치
+  const [currentlng, setCurrentLng] = useState(127.0538496); //127.0538496
+  const [itemList, setItemList] = useState();
+
+  const getDistance = (lat1, lng1, lat2, lng2) => {
+    function deg2rad(deg) {
+      return deg * (Math.PI / 180);
+    }
+
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1); // deg2rad below
+    const dLon = deg2rad(lng2 - lng1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    return d;
+  };
+
+  useEffect(() => {
+    // 현재위치 구하는 메소드
+    navigator.geolocation.getCurrentPosition(pos => {
+      setCurrentLat(pos.coords.latitude);
+      setCurrentLng(pos.coords.lngitude);
+    });
+  }, []);
+
+  useEffect(() => {
+    // 처음 카테고리 데이터 fetch
+    // 첫 카테고리가 지역서비스가 아닐 때
+    if (currentCategory !== '지역 서비스') {
+      //mock data fetch
+      fetch('/data/productsInfo.json')
+        .then(res => res.json())
+        .then(result => {
+          setItemList(result);
+        });
+      // fetch(`api주소/?category=${currentCategory}`)
+      //   .then(res => res.json())
+      //   .then(result => {
+      //     setItemList(result);
+      //   });
+    } else {
+      //처음 카테고리가 지역 서비스 일때
+      //목데이터 활용
+      fetch('/data/productsInfo.json')
+        .then(res => res.json())
+        .then(result => {
+          // setItemList(result);
+          const aroundItem = result.filter(obj => {
+            const distance = getDistance(
+              currentLat,
+              currentlng,
+              obj.lat,
+              obj.lng
+            );
+
+            if (distance < 3) {
+              return obj;
+            } else {
+              return null;
+            }
+          });
+          setItemList(aroundItem);
+        });
+      // 백엔드 연결시 아래코드로 대체
+      // fetch(`api주소/모든아이템`)
+      //   .then(res => res.json())
+      //   .then(result => {
+      //     const aroundItem = result.filter((obj)=>{
+      //       const distance = getDistance(currentLat,currentlng,obj.lat,obj.lng)
+      //       if(distance<3){
+      //         return obj
+      //       }else {
+      //   return null;
+      // }
+      //     })
+      //     setItemList(aroundItem);
+      //   });
+    }
+  }, [currentCategory]);
+
+  // if (currentLat && currentlng) {
+  //   alert('현재 위치는 : ' + currentLat + ', ' + currentlng);
+  // }
 
   return (
     <WrapBody>
@@ -46,17 +140,26 @@ const ProductList = () => {
           <Selector
             onChange={e => {
               setCategory(e.target.value);
+              searchParams.set('category', e.target.value);
+              setSearchParams(searchParams);
             }}
-            // value="cloth"
+            value={currentCategory}
           >
+            <CategoryOption value="">전체</CategoryOption>
             <CategoryOption value="의류">의류</CategoryOption>
             <CategoryOption value="전자기기">전자기기</CategoryOption>
-            <CategoryOption value="악세서리">액세서리</CategoryOption>
+            <CategoryOption value="액세서리">액세서리</CategoryOption>
+            <CategoryOption value="지역 서비스">지역 서비스</CategoryOption>
           </Selector>
         </CategorySelector>
-        <ListTitle>{category}의 추천 상품</ListTitle>
+        <ListTitle>
+          {category === '' ? '전체 상품' : category}의 추천 상품
+        </ListTitle>
         <WrapList>
-          <ListItem />
+          {itemList &&
+            itemList.map((obj, index) => {
+              return <ListItem key={index} item={obj} />;
+            })}
         </WrapList>
       </WrapProductList>
     </WrapBody>

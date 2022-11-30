@@ -8,8 +8,7 @@ const GlobalStyle = createGlobalStyle`
 
   * {
     box-sizing: border-box;
-    font-family: 'Do Hyeon', sans-serif;
-  }
+    font-family: 'Noto Sans KR', sans-serif!important;  }
 `;
 
 export default GlobalStyle;
