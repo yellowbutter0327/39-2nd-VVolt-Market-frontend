@@ -1,66 +1,291 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import variables from '../../styles/variables';
+
+const navigate = useNavigate;
 
 export default function ProductRegister() {
+  const productInfoFetchFunc = e => {
+    fetch('http://10.58.52.83:3000/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json;charset=utf-8' },
+      body: JSON.stringify({
+        name: name,
+        category_id: category_id,
+        location: location,
+        latitude: latitude,
+        longitude: longitude,
+        product_status_id: product_status_id,
+        price: price,
+        description: description,
+      }),
+    })
+      .then(response => {
+        if (response.ok !== true) {
+          throw new Error('error');
+        }
+        return response.json();
+      })
+      .catch(err => {
+        alert('상품 등록 실패');
+      })
+      .then(data => {
+        alert('상품 등록 성공!');
+        navigate('/store');
+      });
+  };
+
+  const [productInfo, setProductInfo] = useState({
+    name: '',
+    category_id: '',
+    location: '',
+    latitude: 0,
+    longitude: 0,
+    product_status_id: '',
+    price: 0,
+    description: '',
+  });
+
+  const {
+    name,
+    category_id,
+    location,
+    latitude,
+    longitude,
+    product_status_id,
+    price,
+    description,
+  } = productInfo;
+
+  const handleProductInfo = event => {
+    const { name, value } = event.target;
+    setProductInfo(prev => ({ ...prev, [name]: value }));
+  };
+
+  // 업로드 이미지 미리보기
+  const [postImages, setPostImages] = useState([]);
+  const [previewImages, setPreviewImages] = useState([]);
+
+  const uploadImgFile = e => {
+    let fileArr = e.target.files;
+    //setPostImages(Array.from(fileArr));
+    let fileURLs = [];
+    let filesLength = fileArr.length > 5 ? 5 : fileArr.length;
+
+    for (let i = 0; i < filesLength; i++) {
+      let file = fileArr[i];
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        fileURLs[i] = reader.result;
+        setPreviewImages([...fileURLs]);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // image fetch 함수
+  const fetchImage = e => {
+    const formData = new FormData();
+    for (let i = 0; i < e.target.files.length; i++) {
+      formData.append('images', e.target.files[i]);
+    }
+
+    fetch('http://10.58.52.83:3000/posts', {
+      method: 'POST',
+      headers: {
+        Authorization: localStorage.getItem('accessToken'),
+      },
+      body: formData,
+    })
+      .then(res => res.json())
+      .then(data => {
+        alert(
+          data.MESSAGE === 'SUCCESS'
+            ? '등록되었습니다.'
+            : '등록에 실패했습니다.'
+        );
+        this.setState({ files: [] });
+      });
+  };
+
+  const [charCount, setCharCount] = useState(0);
+
+  const [userLocation, setUserLocation] = useState();
+
+  //서버에 저장된 user 주소
+  const getUserAddress = () => {
+    fetch('API주소', {
+      method: 'GET',
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUserLocation(data);
+        setProductInfo({
+          ...productInfo,
+          latitude: data.lat,
+          longitude: data.long,
+        });
+      });
+  };
+
+  //현재 위치의 주소
+  const REST_API_KEY = process.env.REACT_APP_KAKAO_REST_API_KEY;
+
+  const getAddress = () => {
+    navigator.geolocation.getCurrentPosition(position => {
+      const lon = position.coords.longitude;
+      const lat = position.coords.latitude;
+      setProductInfo({ ...productInfo, latitude: lat, longitude: lon });
+      fetch(
+        `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${lon}&y=${lat}&input_coord=WGS84`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `KakaoAK ${REST_API_KEY}`,
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        }
+      )
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          //setUserLocation(data.documents[0].address.address_name);
+          setUserLocation(
+            data.documents[0].address.region_1depth_name +
+              ' ' +
+              data.documents[0].address.region_2depth_name +
+              ' ' +
+              data.documents[0].address.region_3depth_name
+          );
+        });
+    });
+  };
+
+  //가격 콤마 찍기
+  const [enteredNum, setEnterdNum] = useState();
+
+  const changeEnteredNum = e => {
+    const value = e.target.value;
+    const removedCommaValue = Number(value.replaceAll(',', ''));
+    setEnterdNum(removedCommaValue.toLocaleString());
+  };
+
   return (
     <ProductRegisterWrap>
       <RegisterProductText>상품 등록하기</RegisterProductText>
       <RegisterProductContent>
         <ProductContentWrap>
           <ProductContentTitle>상품이미지</ProductContentTitle>
-          <ProductImgInput>이미지 등록 라이브러리</ProductImgInput>
+          <ProductImgInput
+            type="file"
+            id="input-file"
+            multiple
+            accept="image/*"
+            onChange={uploadImgFile}
+          />
+          <ProductImgLabel htmlFor="input-file">
+            <ProductImgLogoSvg xmlns="http://www.w3.org/2000/svg">
+              <ProductImgLogoPath d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z" />
+              <ProductImgLogoPath d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1zm9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0z" />
+            </ProductImgLogoSvg>
+            이미지 등록
+          </ProductImgLabel>
+          <ProductImgPreviewWrap>
+            {previewImages.map(file => {
+              return (
+                <ProductImgPreview alt="상품 이미지" src={file} key={file} />
+              );
+            })}
+          </ProductImgPreviewWrap>
         </ProductContentWrap>
         <ProductContentWrap>
           <ProductContentTitle>제목</ProductContentTitle>
-          <ProductNameInput placeholder="상품 제목을 입력해주세요." />
-          <ProductNameInputLength>0/40</ProductNameInputLength>
+          <ProductNameInput
+            placeholder="상품 제목을 입력해주세요."
+            maxLength={39}
+            onChange={
+              (e => setCharCount(e.target.value.length), handleProductInfo)
+            }
+            name="name"
+            value={name}
+          />
+          <ProductInputLength>{charCount}/40</ProductInputLength>
         </ProductContentWrap>
         <ProductContentWrap>
           <ProductContentTitle>카테고리</ProductContentTitle>
-          <ProductCategorySelect>
-            <option>선택</option>
-            <option>의류</option>
-            <option>전자기기</option>
-            <option>액세서리</option>
+          <ProductCategorySelect
+            onChange={handleProductInfo}
+            name="category_id"
+            value={category_id}
+          >
+            <ProductCategoryOption>선택</ProductCategoryOption>
+            <ProductCategoryOption value="2">의류</ProductCategoryOption>
+            <ProductCategoryOption value="1">전자기기</ProductCategoryOption>
+            <ProductCategoryOption value="3">액세서리</ProductCategoryOption>
           </ProductCategorySelect>
         </ProductContentWrap>
         <ProductContentWrap>
           <ProductContentTitle>거래지역</ProductContentTitle>
           <ProductRegionInput>
             <RegionBtnWrap>
-              <RegionBtn>주소 검색</RegionBtn>
-              <RegionBtn>주소 불러오기</RegionBtn>
-              <RegionBtn>현재 위치</RegionBtn>
+              <RegionBtn onClick={getUserAddress}>주소 불러오기</RegionBtn>
+              <RegionBtn onClick={getAddress}>현재 위치</RegionBtn>
             </RegionBtnWrap>
-            <RegionInput placeholder="지역 설정" />
+            <RegionInput
+              placeholder="지역 설정"
+              value={userLocation || location}
+              name="location"
+              onChange={handleProductInfo}
+            />
           </ProductRegionInput>
         </ProductContentWrap>
         <ProductContentWrap>
-          <ProductContentTitle>상태</ProductContentTitle>
+          <ProductContentTitle
+            onChange={handleProductInfo}
+            name="product_status_id"
+            value={product_status_id}
+          >
+            상태
+          </ProductContentTitle>
           <ProductStatusLabel>
-            <ProductStatusInput
-              type="radio"
-              name="status"
-              value="usedProduct"
-            />
+            <ProductStatusInput type="radio" name="status" value="1" />
             중고상품
           </ProductStatusLabel>
           <ProductStatusLabel>
-            <ProductStatusInput type="radio" name="status" value="newProduct" />{' '}
+            <ProductStatusInput type="radio" name="status" value="2" />
             새상품
           </ProductStatusLabel>
         </ProductContentWrap>
         <ProductContentWrap>
           <ProductContentTitle>가격</ProductContentTitle>
-          <ProductPriceInput type="text" placeholder="숫자만 입력해주세요." />
+          <ProductPriceInput
+            type="text"
+            placeholder="숫자만 입력해주세요."
+            onChange={(changeEnteredNum, handleProductInfo)}
+            value={(enteredNum, price)}
+            name="price"
+          />
           <ProductPriceWon>원</ProductPriceWon>
         </ProductContentWrap>
         <ProductContentWrap>
           <ProductContentTitle>설명</ProductContentTitle>
-          <ProductExplanationInput placeholder="여러 장의 상품 사진과 구입 연도, 브랜드, 사용감, 하자 유무 등 구매자에게 필요한 정보를 꼭 포함해 주세요. (10자 이상)" />
+          <ProductExplanationInput
+            placeholder="여러 장의 상품 사진과 구입 연도, 브랜드, 사용감, 하자 유무 등 구매자에게 필요한 정보를 꼭 포함해 주세요. (10자 이상)"
+            maxLength={199}
+            onChange={
+              (e => setCharCount(e.target.value.length), handleProductInfo)
+            }
+            name="description"
+            value={description}
+          />
+          <ProductInputLength>{charCount}/200</ProductInputLength>
         </ProductContentWrap>
       </RegisterProductContent>
-      <RegisterProductBtn>등록하기</RegisterProductBtn>
+      <RegisterProductBtn onClick={(fetchImage, productInfoFetchFunc)}>
+        등록하기
+      </RegisterProductBtn>
     </ProductRegisterWrap>
   );
 }
@@ -71,7 +296,9 @@ const ProductRegisterWrap = styled.div`
 
 const RegisterProductText = styled.div`
   font-size: 30px;
-  border-bottom: 2px solid black;
+  font-weight: bold;
+  color: #882dc4;
+  border-bottom: 3px solid #dca8ff;
   padding-bottom: 50px;
 `;
 
@@ -88,9 +315,40 @@ const ProductContentWrap = styled.div`
 const ProductContentTitle = styled.div`
   width: 200px;
   font-size: 17px;
+  font-weight: bold;
+  color: #521978;
 `;
 
-const ProductImgInput = styled.div``;
+const ProductImgInput = styled.input`
+  display: none;
+`;
+
+const ProductImgLabel = styled.label`
+  width: 200px;
+  height: 200px;
+  background-color: #f8edff;
+  border: 1px solid #dca8ff;
+  color: #dca8ff;
+  font-size: 17px;
+  line-height: 200%;
+  cursor: pointer;
+  ${variables.flex('column', 'center', 'center')}
+`;
+
+const ProductImgLogoSvg = styled.svg`
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+`;
+
+const ProductImgLogoPath = styled.path``;
+
+const ProductImgPreviewWrap = styled.div``;
+
+const ProductImgPreview = styled.img`
+  width: 200px;
+  height: 200px;
+`;
 
 const ProductNameInput = styled.input`
   width: 800px;
@@ -100,14 +358,14 @@ const ProductNameInput = styled.input`
   padding: 10px;
   font-size: 15px;
   &:hover {
-    border: 1px solid black;
+    border: 1.5px solid #dca8ff;
   }
   &:focus {
     outline: none;
   }
 `;
 
-const ProductNameInputLength = styled.div`
+const ProductInputLength = styled.div`
   margin: 18px 0 0 10px;
 `;
 
@@ -118,9 +376,11 @@ const ProductCategorySelect = styled.select`
   padding: 10px;
   font-size: 15px;
   &:focus {
-    outline: 1px solid black;
+    outline: 1.5px solid #dca8ff;
   }
 `;
+
+const ProductCategoryOption = styled.option``;
 
 const ProductRegionInput = styled.div``;
 
@@ -138,14 +398,16 @@ const RegionBtn = styled.button`
   font-size: 15px;
   cursor: pointer;
   &:hover {
-    background-color: #f4f4fa;
+    background-color: #dca8ff;
+    border: 1.5px solid #dca8ff;
+    color: white;
   }
 `;
 
 const RegionInput = styled.input`
   width: 800px;
   height: 50px;
-  background-color: #f4f4fa;
+  background-color: #f7f2fa;
   border: 1px solid lightgray;
   padding: 10px;
   font-size: 15px;
@@ -167,10 +429,13 @@ const ProductPriceInput = styled.input`
   padding: 10px;
   font-size: 15px;
   &:hover {
-    border: 1px solid black;
+    border: 1.5px solid #dca8ff;
   }
   &:focus {
     outline: none;
+  }
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
   }
 `;
 
@@ -186,7 +451,7 @@ const ProductExplanationInput = styled.textarea`
   padding: 10px;
   font-size: 15px;
   &:hover {
-    border: 1px solid black;
+    border: 1.5px solid #dca8ff;
   }
   &:focus {
     outline: none;
@@ -199,12 +464,12 @@ const RegisterProductBtn = styled.button`
   margin: 30px 0;
   border: none;
   border-radius: 5px;
-  background-color: #ff564a;
+  background-color: #dca8ff;
   font-size: 20px;
   font-weight: bold;
   color: white;
   cursor: pointer;
   &:hover {
-    background-color: #e34d42;
+    background-color: #882dc4;
   }
 `;

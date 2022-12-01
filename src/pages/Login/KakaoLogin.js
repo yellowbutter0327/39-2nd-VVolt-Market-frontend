@@ -9,7 +9,7 @@ export default function KakaoLogin() {
   const KAKAO_CODE = location.search.split('=')[1];
 
   useEffect(() => {
-    fetch(`http://10.58.52.236:3000/users/kakaoLogin?code=${KAKAO_CODE}`, {
+    fetch(`http://10.58.52.148:3000/users/kakaoLogin?code=${KAKAO_CODE}`, {
       method: 'GET',
     })
       .then(res => res.json())
