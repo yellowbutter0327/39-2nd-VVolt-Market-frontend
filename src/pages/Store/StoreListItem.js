@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-const ListItem = ({ item }) => {
+import { format, register } from 'timeago.js';
+import koLocale from 'timeago.js/lib/lang/ko'; // 한글로 변환
+register('ko', koLocale);
+const StoreListItem = ({ item, curruntMenu }) => {
   const {
     productId,
     productName,
@@ -12,59 +14,23 @@ const ListItem = ({ item }) => {
     images,
   } = item;
 
-  const getTimeGap = registerDate => {
-    const milliSeconds = new Date() - new Date(registerDate);
-    const seconds = milliSeconds / 1000;
-    if (seconds < 60) return `방금 전`;
-    const minutes = seconds / 60;
-    if (minutes < 60) return `${Math.floor(minutes)}분 전`;
-    const hours = minutes / 60;
-    if (hours < 24) return `${Math.floor(hours)}시간 전`;
-    const days = hours / 24;
-    if (days < 7) return `${Math.floor(days)}일 전`;
-    const weeks = days / 7;
-    if (weeks < 5) return `${Math.floor(weeks)}주 전`;
-    const months = days / 30;
-    if (months < 12) return `${Math.floor(months)}달 전`;
-    const years = days / 365;
-    return `${Math.floor(years)}년 전`;
-  };
-
-  const setRecentProduct = () => {
-    if (!localStorage.getItem('recentProduct')) {
-      const recentProduct = [];
-      recentProduct.unshift(item);
-      localStorage.setItem('recentProduct', JSON.stringify(recentProduct));
-    } else {
-      const recentProduct = JSON.parse(localStorage.getItem('recentProduct'));
-      recentProduct.unshift(item);
-      const map = new Map(); // 맵
-      for (const character of recentProduct) {
-        map.set(JSON.stringify(character), character); // value가 모두 같은 객체 요소를 제외한 맵 생성
-      }
-      const unique = [...map.values()];
-      if (unique.length > 3) {
-        unique.pop();
-      }
-      localStorage.setItem('recentProduct', JSON.stringify(unique));
-    }
-  };
-
   return (
     <Product>
       {item && (
-        <ProductLink
-          onClick={setRecentProduct}
-          to={`/productDetail/${productId}`}
-        >
-          <ProductImg src={images} alt="productImg" />
+        <ProductLink to={`/productDetail/${productId}`}>
+          {curruntMenu !== '구매내역' ? (
+            <ProductImg src={images} alt="productImg" />
+          ) : (
+            <SelledProductImg url={images}>판매완료</SelledProductImg>
+          )}
+
           <ProductBottom>
             <ProductName>{productName}</ProductName>
             <ProductInfo>
               <ProductPrice>
                 {Number(productPrice).toLocaleString()} 원
               </ProductPrice>
-              <ProductTime>{getTimeGap(registerDate)}</ProductTime>
+              <ProductTime>{format(registerDate, 'ko')}</ProductTime>
             </ProductInfo>
           </ProductBottom>
           <ProductLocation>
@@ -96,9 +62,21 @@ const ProductLink = styled(Link)`
   text-decoration: none;
   color: inherit;
 `;
+const SelledProductImg = styled.div`
+  width: 193px;
+  height: 193px;
+  background-image: url(${props => props.url});
+  background-size: cover;
+  opacity: 0.6;
+  color: #fff;
+  font-size: 19px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 193px;
+`;
 const ProductImg = styled.img`
-  width: 194px;
-  height: 194px;
+  width: 193px;
+  height: 193px;
 `;
 
 const ProductBottom = styled.div`
@@ -115,12 +93,12 @@ const ProductInfo = styled.div`
   margin: 10px 0;
 `;
 const ProductPrice = styled.div`
-  width: 128px;
+  width: 130px;
   font-size: 16px;
   font-weight: 600;
 `;
 const ProductTime = styled.div`
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 300;
   color: #666;
 `;
@@ -140,4 +118,4 @@ const ProductLocation = styled.div`
   color: #666;
 `;
 
-export default ListItem;
+export default StoreListItem;

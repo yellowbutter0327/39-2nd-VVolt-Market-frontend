@@ -1,0 +1,50 @@
+[
+  {
+    "writerImg": "/images/storeProfile_img.jpg",
+    "writerName": "번개상점",
+    "rate": 3.5,
+    "reviewContent": "상점주인이 정말 착해요"
+  },
+  {
+    "writerImg": "/images/storeProfile_img_1.jpeg",
+    "writerName": "폰팔이",
+    "rate": 4,
+    "reviewContent": "상점주인이 시간 약속을 잘 지켜서 좋았어요! 헷^^"
+  },
+  {
+    "writerImg": "/images/storeProfile_img_2.jpeg",
+    "writerName": "위코더",
+    "rate": 2,
+    "reviewContent": "물건이 너무 비싸요"
+  },
+  {
+    "writerImg": "/images/storeProfile_img_3.jpeg",
+    "writerName": "창피해요",
+    "rate": 1,
+    "reviewContent": "상점주인이 너무 무뚝뚝해요ㅠㅠ"
+  },
+  {
+    "writerImg": "/images/storeProfile_img_4.jpg",
+    "writerName": "쿨거래시 네고가능",
+    "rate": 5,
+    "reviewContent": "쿨거래 감사합니다 ><"
+  },
+  {
+    "writerImg": "/images/storeProfile_img_5.jpg",
+    "writerName": "맛집러버",
+    "rate": 4.5,
+    "reviewContent": "배송이 아주 빨라요 감사합니다"
+  },
+  {
+    "writerImg": "/images/storeProfile_img_6.jpg",
+    "writerName": "번개초보",
+    "rate": 2.5,
+    "reviewContent": "상점주인이 번개 장터 처음 이신듯ㅋ"
+  },
+  {
+    "writerImg": "/images/storeProfile_img_7.jpeg",
+    "writerName": "선릉주민",
+    "rate": 4,
+    "reviewContent": "좋은 물건 감사함돠^^"
+  }
+]

@@ -8,6 +8,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import 'swiper/css/bundle';
 import ListItem from './ListItem';
+import { APIS } from '../../config';
 
 const ProductList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -50,24 +51,55 @@ const ProductList = () => {
     // 처음 카테고리 데이터 fetch
     // 첫 카테고리가 지역서비스가 아닐 때
     if (currentCategory !== '지역 서비스') {
-      //mock data fetch
-      fetch('/data/productsInfo.json')
-        .then(res => res.json())
-        .then(result => {
-          setItemList(result);
-        });
-      // fetch(`api주소/?category=${currentCategory}`)
+      // //mock data fetch
+      // fetch('/data/productsInfo.json')
       //   .then(res => res.json())
       //   .then(result => {
       //     setItemList(result);
       //   });
+      if (currentCategory === '') {
+        fetch(`${APIS.ipAddress}/products`)
+          .then(res => res.json())
+          .then(result => {
+            console.log(result);
+            setItemList(result);
+          });
+      } else {
+        fetch(`${APIS.ipAddress}/products?category=${currentCategory}`)
+          .then(res => res.json())
+          .then(result => {
+            console.log(result);
+            setItemList(result);
+          });
+      }
     } else {
       //처음 카테고리가 지역 서비스 일때
       //목데이터 활용
-      fetch('/data/productsInfo.json')
+      // fetch('/data/productsInfo.json')
+      //   .then(res => res.json())
+      //   .then(result => {
+      //     // setItemList(result);
+      //     const aroundItem = result.filter(obj => {
+      //       const distance = getDistance(
+      //         currentLat,
+      //         currentlng,
+      //         Number(obj.lat),
+      //         Number(obj.lng)
+      //       );
+
+      //       if (distance < 3) {
+      //         return obj;
+      //       } else {
+      //         return null;
+      //       }
+      //     });
+      //     setItemList(aroundItem);
+      //   });
+
+      // 백엔드 연결시 아래코드로 대체
+      fetch(`${APIS.ipAddress}/products`)
         .then(res => res.json())
         .then(result => {
-          // setItemList(result);
           const aroundItem = result.filter(obj => {
             const distance = getDistance(
               currentLat,
@@ -75,7 +107,6 @@ const ProductList = () => {
               obj.lat,
               obj.lng
             );
-
             if (distance < 3) {
               return obj;
             } else {
@@ -84,20 +115,6 @@ const ProductList = () => {
           });
           setItemList(aroundItem);
         });
-      // 백엔드 연결시 아래코드로 대체
-      // fetch(`api주소/모든아이템`)
-      //   .then(res => res.json())
-      //   .then(result => {
-      //     const aroundItem = result.filter((obj)=>{
-      //       const distance = getDistance(currentLat,currentlng,obj.lat,obj.lng)
-      //       if(distance<3){
-      //         return obj
-      //       }else {
-      //   return null;
-      // }
-      //     })
-      //     setItemList(aroundItem);
-      //   });
     }
   }, [currentCategory]);
 

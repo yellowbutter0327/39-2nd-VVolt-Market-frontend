@@ -1,0 +1,30 @@
+[
+  {
+    "user_id": 2,
+    "userNickname": "우유상점",
+    "user_image": "/images/storeProfile_img.jpg",
+    "product_count": 9,
+    "follower_count": 2
+  },
+  {
+    "user_id": 3,
+    "userNickname": "지민 상점",
+    "user_image": "/images/storeProfile_img.jpg",
+    "product_count": 34,
+    "follower_count": 97
+  },
+  {
+    "user_id": 4,
+    "userNickname": "효원 상점",
+    "user_image": "/images/storeProfile_img.jpg",
+    "product_count": 23,
+    "follower_count": 64
+  },
+  {
+    "user_id": 5,
+    "userNickname": "은혜 스토어",
+    "user_image": "/images/storeProfile_img.jpg",
+    "product_count": 11,
+    "follower_count": 43
+  }
+]

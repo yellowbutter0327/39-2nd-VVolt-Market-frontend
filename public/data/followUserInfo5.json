@@ -1,0 +1,16 @@
+[
+  {
+    "user_id": 2,
+    "userNickname": "우유상점",
+    "user_image": "/images/storeProfile_img.jpg",
+    "product_count": 9,
+    "follower_count": 2
+  },
+  {
+    "user_id": 3,
+    "userNickname": "지민 상점",
+    "user_image": "/images/storeProfile_img.jpg",
+    "product_count": 34,
+    "follower_count": 97
+  }
+]

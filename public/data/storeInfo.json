@@ -1,0 +1,22 @@
+{
+  "isMyShop": true,
+  "myData": {
+    "writerId": 1,
+    "writerName": "testName1",
+    "writerImg": "/images/storeProfile_img.jpg"
+  },
+  "shopData": {
+    "sellerId": 1,
+    "sellerName": "testName1-changed",
+    "sellerImg": "/images/storeProfile_img.jpg",
+    "sellerIntro": "쌉니다 김밥천국 김밥",
+    "sellerOpenDay": "2022-11-30T16:13:38.000Z",
+    "starAVG": "4.0000",
+    "reviewNum": "4",
+    "onSaleNum": "13",
+    "soldOutNum": "5",
+    "likeNum": "1",
+    "followingNum": "1",
+    "followNum": "3"
+  }
+}
