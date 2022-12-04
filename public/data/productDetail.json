@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "productThumbnail": "/images/product_img_1.jpg",
+    "productTitle": "백예린 2집 LP",
+    "productPrice": 80000,
+    "productWish": 1,
+    "productView": 45,
+    "productTime": "2시간",
+    "productState": "새상품",
+    "productLocal": "노원구",
+    "productInfo": "백예린 앨범 팝니다.",
+    "storeName": "백예린 팬",
+    "storeItem": 16,
+    "storeFollower": 100,
+    "storeProduct": [
+      {
+        "storeImg": "/images/product_img_2.jpg",
+        "storePrice": 2000
+      },
+      {
+        "storeImg": "/images/product_img_3.jpg",
+        "storePrice": 5000
+      }
+    ],
+    "starRating": 70,
+    "reviewImg": "/images/profile_img_1.png",
+    "reviewTxt": "으녜 귀요미"
+  }
+]
