@@ -11,6 +11,7 @@ import ProductList from './pages/ProductList/ProductList';
 import ProductRegister from './pages/ProductRegister/ProductRegister';
 import Signup from './pages/Signup/Signup';
 import Store from './pages/Store/Store';
+import PaymentSuccess from './pages/Payment/PaymentSuccess';
 
 const Router = () => {
   return (
@@ -21,11 +22,12 @@ const Router = () => {
         <Route path="/" element={<ProductList />} />
         <Route path="/login" element={<Login />} />
         <Route path="/users/kakaoLogin" element={<KakaoLogin />} />
-        <Route path="/payment" element={<Payment />} />
         <Route path="/productdetail/:id" element={<ProductDetail />} />
+        <Route path="/payment/:id" element={<Payment />} />
         <Route path="/productregister" element={<ProductRegister />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/store/:id" element={<Store />} />
+        <Route path="/success" element={<PaymentSuccess />} />
       </Routes>
       <Footer />
     </BrowserRouter>
