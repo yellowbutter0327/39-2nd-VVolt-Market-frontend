@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { APIS } from '../../config';
 import variables from '../../styles/variables';
 
 export default function KakaoLogin() {
@@ -9,14 +10,14 @@ export default function KakaoLogin() {
   const KAKAO_CODE = location.search.split('=')[1];
 
   useEffect(() => {
-    fetch(`http://10.58.52.148:3000/users/kakaoLogin?code=${KAKAO_CODE}`, {
+    fetch(`${APIS.ipAddress}/users/kakaoLogin?code=${KAKAO_CODE}`, {
       method: 'GET',
     })
       .then(res => res.json())
       .then(data => {
-        localStorage.setItem('token', data.userData.accessToken);
+        localStorage.setItem('TOKEN', data.userData.accessToken);
         if (data.userData.isMember === true) {
-          navigate('/');
+          navigate('/?category=');
         } else {
           navigate('/signup');
         }
@@ -52,6 +53,7 @@ export default function KakaoLogin() {
 const KakaoLoginWrap = styled.div`
   width: 100%;
   height: 600px;
+  padding-top: 100px;
   font-size: 40px;
   font-weight: bold;
   color: #882dc4;

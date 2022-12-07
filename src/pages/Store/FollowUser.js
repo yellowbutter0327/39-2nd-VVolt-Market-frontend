@@ -4,21 +4,18 @@ import styled from 'styled-components';
 import variables from '../../styles/variables';
 
 const FollowUser = ({ followInfo }) => {
-  const { user_id, userNickname, user_image, product_count, follower_count } =
-    followInfo;
+  const { id, usernickname, user_image } = followInfo;
   const navigator = useNavigate();
   return (
     <FollowUserBox
       onClick={() => {
-        navigator(`/store/${user_id}`);
+        navigator(`/store/${id}`);
         window.location.reload();
       }}
     >
       <FollowUserImg src={user_image} />
-      <FollowUserName>{userNickname}</FollowUserName>
-      <FollwUserCount>
-        상품{product_count} | 팔로워{follower_count}
-      </FollwUserCount>
+      <FollowUserName>{usernickname}</FollowUserName>
+      {/* <FollwUserCount></FollwUserCount> */}
     </FollowUserBox>
   );
 };
@@ -43,6 +40,7 @@ const FollowUserImg = styled.img`
   height: 100px;
   margin-bottom: 20px;
   border-radius: 50px;
+  cursor: pointer;
 `;
 const FollowUserName = styled.div`
   font-weight: 500;

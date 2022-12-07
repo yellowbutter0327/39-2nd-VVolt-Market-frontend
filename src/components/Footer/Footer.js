@@ -83,12 +83,12 @@ const WrapFooter = styled.div`
   height: 300px;
   border-top: 3px solid #e4e4e4;
   background-color: #fff;
+  z-index: 120;
 `;
 const WrapLink = styled.div`
   ${variables.flex('row', 'center', 'auto')};
   position: absolute;
   width: 50%;
-  height: 400px;
   top: 50px;
   left: 0;
 `;
@@ -136,9 +136,9 @@ const Button = styled.div`
 const WrapProfile = styled.div`
   position: absolute;
   width: 40%;
-  height: 400px;
   top: 50px;
   right: 0;
+  padding-bottom: 30px;
 `;
 const Developer = styled.div`
   display: inline-block;

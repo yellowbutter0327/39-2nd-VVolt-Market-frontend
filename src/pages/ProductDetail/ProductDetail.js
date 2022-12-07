@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { Autoplay, Navigation } from 'swiper';
+import { Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -10,9 +10,8 @@ import 'swiper/css/bundle';
 import iconHour from './../../assets/images/hour.png';
 import iconHeart from './../../assets/images/heart.png';
 import iconLocal from './../../assets/images/localicon.png';
-import Heart from './../../assets/images/heartbtn.png';
-import Heart2 from './../../assets/images/heart2.png';
 import { useParams } from 'react-router-dom';
+import { APIS } from '../../config';
 
 export default function ProductDetail() {
   const [productDetail, setProductDetail] = useState();
@@ -30,166 +29,201 @@ export default function ProductDetail() {
   };
 
   const productMore = () => {
-    navigate(`/store/${productDetail.storeId}`);
+    navigate(`/store/${storeInfo[0].storeId}`);
   };
 
   useEffect(() => {
-    // fetch(`상품디테일정보 가져오는 api/${productId}`)
-    fetch('/data/productDetail.json')
+    //상품디테일정보 가져오는 api
+    fetch(`${APIS.ipAddress}/products/${productId}`, {
+      headers: { authorization: localStorage.getItem('TOKEN') },
+    })
+      // fetch('/data/productDetail.json') //mockdata
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-        setProductDetail(data.productDetail[0]);
-        setStoreInfo(data.storeInfor);
+        console.log(data.productDetailData);
+        setProductDetail(data.productDetailData.productDetail[0]);
+        setStoreInfo(data.productDetailData.storeInfor);
+        console.log(data.isLike);
+        setIsActive(data.isLike);
       });
   }, []);
 
-  const [isActive, setIsActive] = useState(true);
-
-  const handleClick = () => {
-    setIsActive(current => !current);
-  };
-
-  const [isWishAdd, setIsWishAdd] = useState(false);
-  const [wishCount, setWishCount] = useState(808);
-
-  const wishAddHandler = () => {
-    setIsWishAdd(!isWishAdd);
-  };
+  const [isActive, setIsActive] = useState();
 
   return (
     <>
-      {productDetail && (
-        <MainWrap>
-          <InfoWrap>
-            <Banner
-              spaceBetween={30}
-              centeredSlides={true}
-              navigation={true}
-              modules={[Navigation]}
-              className="mySwiper"
-            >
-              {productDetail &&
-                productDetail.images.map((str, index) => {
-                  return (
-                    <ImgSwiperSlide key={index}>
-                      <SlideImg src={str} alt={productDetail.productName} />
-                    </ImgSwiperSlide>
-                  );
-                })}
-            </Banner>
-
-            <ProductName>{productDetail.productName}</ProductName>
-            <Price>
-              {Number(productDetail.productPrice).toLocaleString()}원
-            </Price>
-            <StatusList>
-              <StatusIcon>
-                <StatusIconImg src={iconHeart} />
-                {productDetail.likeCount}
-              </StatusIcon>
-              {/* <StatusIcon>
-            <StatusIconImg src={iconView} /> {productDetail.productView}
-          </StatusIcon> */}
-              <StatusIcon>
-                <StatusIconImg src={iconHour} />
-                10분 전
-              </StatusIcon>
-            </StatusList>
-
-            <DetailList>
-              <ListElement>
-                <ListElementTit>상품상태</ListElementTit>
-                중고상품
-              </ListElement>
-              <ListElement>
-                <ListElementTit>거래지역</ListElementTit>
-                <ListElementIcon src={iconLocal} /> {productDetail.location}
-              </ListElement>
-            </DetailList>
-
-            <ButtonWrap>
-              <InfoButton
-                onClick={() => {
-                  if (localStorage.getItem('TOKEN')) {
-                    if (isActive) {
-                      //좋아요 추가
-                      setProductDetail({
-                        ...productDetail,
-                        likeCount: `${Number(productDetail.likeCount) + 1}`,
-                      });
-                    } else {
-                      //좋아요 취소
-                      setProductDetail({
-                        ...productDetail,
-                        likeCount: `${Number(productDetail.likeCount) - 1}`,
-                      });
-                    }
-                    handleClick();
-                  } else {
-                    alert('로그인이 필요한 서비스 입니다.');
-                  }
-                  // {
-                  //   // wishCountHandler;
-                  // }
-                }}
-                isActive={isActive}
+      <WrapProductDetail>
+        {productDetail && storeInfo && (
+          <MainWrap>
+            <InfoWrap>
+              <Banner
+                spaceBetween={30}
+                centeredSlides={true}
+                navigation={true}
+                modules={[Navigation]}
+                className="mySwiper"
               >
-                {/* <LikeImg src={isWishAdd ? { Heart } : { Heart2 }}></LikeImg>  */}
-                찜<LikeNumber> {productDetail.likeCount}</LikeNumber>
-              </InfoButton>
+                {productDetail &&
+                  productDetail.images.map((str, index) => {
+                    return (
+                      <ImgSwiperSlide key={index}>
+                        <SlideImg src={str} alt={productDetail.productName} />
+                      </ImgSwiperSlide>
+                    );
+                  })}
+              </Banner>
 
-              <StoreBtn onClick={purchaseLink}>바로구매</StoreBtn>
-            </ButtonWrap>
-          </InfoWrap>
+              <ProductName>{productDetail.productName}</ProductName>
+              <Price>
+                {Number(productDetail.productPrice).toLocaleString()}원
+              </Price>
+              <StatusList>
+                <StatusIcon>
+                  <StatusIconImg src={iconHeart} />
+                  {productDetail.likeCount}
+                </StatusIcon>
+                <StatusIcon>
+                  <StatusIconImg src={iconHour} />
+                  10분 전
+                </StatusIcon>
+              </StatusList>
 
-          <DetailWrap>
-            <ProductInfo>
-              <PdTitle>상품정보</PdTitle>
-              <PdText> {productDetail.productDesc} </PdText>
-            </ProductInfo>
+              <DetailList>
+                <ListElement>
+                  <ListElementTit>상품상태</ListElementTit>
+                  중고상품
+                </ListElement>
+                <ListElement>
+                  <ListElementTit>거래지역</ListElementTit>
+                  <ListElementIcon src={iconLocal} /> {productDetail.location}
+                </ListElement>
+              </DetailList>
 
-            <StoreInfo>
-              <StoreBox>
-                <PdTitle>상점정보</PdTitle>
-                <StoreName>{storeInfo[0].nickName}</StoreName>
-                <StoreUl>
-                  <StoreLi> 상품 {storeInfo[0].productCount}개 </StoreLi>
-                  <StoreLi> 팔로워 {storeInfo[0].followerCount} </StoreLi>
-                </StoreUl>
+              <ButtonWrap>
+                <InfoButton
+                  onClick={() => {
+                    if (localStorage.getItem('TOKEN')) {
+                      if (!isActive) {
+                        //좋아요 추가
+                        fetch(`${APIS.ipAddress}/likes/${productId}`, {
+                          method: 'post',
+                          headers: {
+                            'Content-Type': 'application/json;charset=utf-8',
+                            authorization: localStorage.getItem('TOKEN'),
+                          },
+                          body: JSON.stringify({
+                            follow: false,
+                          }),
+                        })
+                          .then(res => {
+                            if (res.status === 201) {
+                              alert('찜목록에 저장되었습니다.');
+                              setProductDetail({
+                                ...productDetail,
+                                likeCount: `${
+                                  Number(productDetail.likeCount) + 1
+                                }`,
+                              });
+                              setIsActive(true);
+                            } else {
+                              throw new Error('찜추가를 실패했습니다.');
+                            }
+                          })
+                          .catch(error => alert('찜추가를 실패했습니다.'));
+                      } else {
+                        //좋아요 취소
+                        fetch(`${APIS.ipAddress}/likes/${productId}`, {
+                          method: 'post',
+                          headers: {
+                            'Content-Type': 'application/json;charset=utf-8',
+                            authorization: localStorage.getItem('TOKEN'),
+                          },
+                          body: JSON.stringify({
+                            follow: false,
+                          }),
+                        })
+                          .then(res => {
+                            if (res.status === 201) {
+                              alert('찜목록에서 제거되었습니다.');
+                              setProductDetail({
+                                ...productDetail,
+                                likeCount: `${
+                                  Number(productDetail.likeCount) - 1
+                                }`,
+                              });
+                              setIsActive(false);
+                            } else {
+                              throw new Error('찜삭제를 실패했습니다.');
+                            }
+                          })
+                          .catch(error => alert('찜삭제를 실패했습니다.'));
+                      }
+                    } else {
+                      alert('로그인이 필요한 서비스 입니다.');
+                    }
+                  }}
+                  isActive={isActive}
+                >
+                  {/* <LikeImg src={isWishAdd ? { Heart } : { Heart2 }}></LikeImg>  */}
+                  찜<LikeNumber> {productDetail.likeCount}</LikeNumber>
+                </InfoButton>
 
-                <StoreImgList>
-                  <StoreImgLi>
-                    <StoreImg src={storeInfo[0].images} />
-                    <StorePrice>
-                      {Number(storeInfo[0].price).toLocaleString()}원
-                    </StorePrice>
-                  </StoreImgLi>
-                  <StoreImgLi>
-                    <StoreImg src={storeInfo[1].images} />
-                    <StorePrice>
-                      {Number(storeInfo[1].price).toLocaleString()}원
-                    </StorePrice>
-                  </StoreImgLi>
-                </StoreImgList>
-
-                <StoreMoreBtn onClick={productMore}>
-                  <BtnRed>{storeInfo[0].productCount - 2}개 </BtnRed>
-                  상품 더보기
-                </StoreMoreBtn>
-              </StoreBox>
-
-              <StoreBtnWrap>
                 <StoreBtn onClick={purchaseLink}>바로구매</StoreBtn>
-              </StoreBtnWrap>
-            </StoreInfo>
-          </DetailWrap>
-        </MainWrap>
-      )}
+              </ButtonWrap>
+            </InfoWrap>
+
+            <DetailWrap>
+              <ProductInfo>
+                <PdTitle>상품정보</PdTitle>
+                <PdText> {productDetail.productDesc} </PdText>
+              </ProductInfo>
+
+              <StoreInfo>
+                <StoreBox>
+                  <PdTitle>상점정보</PdTitle>
+                  <StoreName>{storeInfo[0].nickName}</StoreName>
+                  <StoreUl>
+                    <StoreLi> 상품 {storeInfo[0].productCount}개 </StoreLi>
+                    <StoreLi> 팔로워 {storeInfo[0].followerCount} </StoreLi>
+                  </StoreUl>
+
+                  <StoreImgList>
+                    <StoreImgLi>
+                      <StoreImg src={storeInfo[0].images[0]} />
+                      <StorePrice>
+                        {Number(storeInfo[0].price).toLocaleString()}원
+                      </StorePrice>
+                    </StoreImgLi>
+                    {storeInfo[1] && (
+                      <StoreImgLi>
+                        <StoreImg src={storeInfo[1].images[0]} />
+                        <StorePrice>
+                          {Number(storeInfo[1].price).toLocaleString()}원
+                        </StorePrice>
+                      </StoreImgLi>
+                    )}
+                  </StoreImgList>
+
+                  <StoreMoreBtn onClick={productMore}>
+                    <BtnRed>{storeInfo[0].productCount - 2}개 </BtnRed>
+                    상품 더보기
+                  </StoreMoreBtn>
+                </StoreBox>
+
+                <StoreBtnWrap>
+                  <StoreBtn onClick={purchaseLink}>바로구매</StoreBtn>
+                </StoreBtnWrap>
+              </StoreInfo>
+            </DetailWrap>
+          </MainWrap>
+        )}
+      </WrapProductDetail>
     </>
   );
 }
-
+const WrapProductDetail = styled.div`
+  padding-top: 150px;
+`;
 const MainWrap = styled.div`
   margin: 80px auto;
   width: 1000px;
@@ -292,18 +326,9 @@ const InfoButton = styled.button`
   font-size: 20px;
   font-weight: bold;
   border: none;
-  background-color: ${props => (props.isActive ? '#cccccc' : '#333333')};
-  /* 
-   {
-    isactive?'salmon': '';
-  }
-  color: {
-    isactive?'white': '';
-  } */
-  /* & + & {
-    margin-left: 10px;
-    background: #f70000;
-  } */
+  background-color: ${props => (props.isActive ? '#882DC4' : '#cccccc')};
+  margin-right: 20px;
+  cursor: pointer;
 `;
 
 const PdTitle = styled.div`
@@ -407,10 +432,12 @@ const StoreMoreBtn = styled.button`
   font-size: 16px;
   background: white;
   border: 1px solid #eee;
+  cursor: pointer;
 `;
 
 const BtnRed = styled.span`
   color: red;
+  cursor: pointer;
 `;
 
 const StoreBtnWrap = styled.div`
@@ -420,18 +447,17 @@ const StoreBtnWrap = styled.div`
 const StoreBtn = styled.button`
   height: 50px;
   width: 100%;
-  color: #fff;
+  color: #521978;
   font-size: 20px;
   font-weight: bold;
-  border: none;
-  background: #f70000;
+  border: 2px solid #521978;
+  background: #fff;
+  cursor: pointer;
+  &:hover {
+    background-color: #521978;
+    color: #fff;
+  }
 `;
-
-// const EachImg = styled(SwiperSlide)``;
-// const PdtSlideImg = styled.img`
-//   width: 100%;
-//   height: 300px;
-// `;
 
 const LikeNumber = styled.span``;
 

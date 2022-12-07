@@ -3,14 +3,21 @@ import styled from 'styled-components';
 import ReactStars from 'react-stars';
 
 import variables from '../../styles/variables';
+import { useNavigate } from 'react-router-dom';
 
 const StoreEachReview = ({ reviewInfo }) => {
-  const { writerImg, writerName, rate, reviewContent } = reviewInfo;
+  const navigate = useNavigate();
+  const { writerImg, writerName, rate, reviewContent, writerId } = reviewInfo;
 
   return (
     <WrapReview>
       <WrapReviewTop>
-        <WriterImg src={writerImg} />
+        <WriterImg
+          src={writerImg}
+          onClick={() => {
+            navigate(`/store/${writerId}`);
+          }}
+        />
         <WrapNameScore>
           <WriterName>{writerName}</WriterName>
           <ReactStars count={5} size={18} value={rate} edit={false} />
@@ -38,6 +45,7 @@ const WriterImg = styled.img`
   height: 60px;
   margin-right: 20px;
   border-radius: 30px;
+  cursor: pointer;
 `;
 const WrapNameScore = styled.div`
   ${variables.flex('column', 'center', 'auto')}

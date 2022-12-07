@@ -1,40 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { APIS } from '../../config';
 import variables from '../../styles/variables';
 
-const navigate = useNavigate;
-
 export default function ProductRegister() {
-  const productInfoFetchFunc = e => {
-    fetch('http://10.58.52.83:3000/posts', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json;charset=utf-8' },
-      body: JSON.stringify({
-        name: name,
-        category_id: category_id,
-        location: location,
-        latitude: latitude,
-        longitude: longitude,
-        product_status_id: product_status_id,
-        price: price,
-        description: description,
-      }),
-    })
-      .then(response => {
-        if (response.ok !== true) {
-          throw new Error('error');
-        }
-        return response.json();
-      })
-      .catch(err => {
-        alert('상품 등록 실패');
-      })
-      .then(data => {
-        alert('상품 등록 성공!');
-        navigate('/store');
-      });
-  };
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState();
 
   const [productInfo, setProductInfo] = useState({
     name: '',
@@ -58,16 +30,38 @@ export default function ProductRegister() {
     description,
   } = productInfo;
 
+  useEffect(() => {
+    fetch(`${APIS.ipAddress}/users/1`, {
+      headers: { authorization: localStorage.getItem('TOKEN') },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUserLocation(data.myData.address);
+        setProductInfo({
+          ...productInfo,
+          latitude: data.myData.latitude,
+          longitude: data.myData.longitude,
+          location: data.myData.address,
+        });
+        setUserId(data.myData.writerId);
+      });
+  }, []);
+
   const handleProductInfo = event => {
     const { name, value } = event.target;
     setProductInfo(prev => ({ ...prev, [name]: value }));
   };
 
   // 업로드 이미지 미리보기
-  const [postImages, setPostImages] = useState([]);
+  const [form, setForm] = useState();
   const [previewImages, setPreviewImages] = useState([]);
 
   const uploadImgFile = e => {
+    const formData = new FormData();
+    for (let i = 0; i < e.target.files.length; i++) {
+      formData.append('image', e.target.files[i]);
+    }
+    setForm(formData);
     let fileArr = e.target.files;
     //setPostImages(Array.from(fileArr));
     let fileURLs = [];
@@ -86,26 +80,52 @@ export default function ProductRegister() {
 
   // image fetch 함수
   const fetchImage = e => {
-    const formData = new FormData();
-    for (let i = 0; i < e.target.files.length; i++) {
-      formData.append('images', e.target.files[i]);
-    }
-
-    fetch('http://10.58.52.83:3000/posts', {
+    console.log(form);
+    fetch(`${APIS.ipAddress}/products/image`, {
       method: 'POST',
       headers: {
-        Authorization: localStorage.getItem('accessToken'),
+        Authorization: localStorage.getItem('TOKEN'),
       },
-      body: formData,
+      body: form,
     })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          throw new Error('이미지 url 받아오기 실패');
+        }
+      })
+      .catch(error => alert(error))
       .then(data => {
-        alert(
-          data.MESSAGE === 'SUCCESS'
-            ? '등록되었습니다.'
-            : '등록에 실패했습니다.'
-        );
-        this.setState({ files: [] });
+        // this.setState({ files: [] });
+        fetch(`${APIS.ipAddress}/products`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+
+            Authorization: localStorage.getItem('TOKEN'),
+          },
+          body: JSON.stringify({
+            image_url: data.image_url,
+            name: name,
+            category_id: category_id,
+            location: userLocation,
+            // latitude: 33.333,
+            // longitude: 33.333,
+            latitude: latitude,
+            longitude: longitude,
+            product_status_id: 1,
+            price: price,
+            description: description,
+          }),
+        }).then(response => {
+          if (response.status !== 201) {
+            alert('상품 등록 실패');
+          } else {
+            alert('상품 등록 성공!');
+            navigate(`/store/${userId}`);
+          }
+        });
       });
   };
 
@@ -115,17 +135,19 @@ export default function ProductRegister() {
 
   //서버에 저장된 user 주소
   const getUserAddress = () => {
-    fetch('API주소', {
-      method: 'GET',
+    fetch(`${APIS.ipAddress}/users/1`, {
+      headers: { authorization: localStorage.getItem('TOKEN') },
     })
       .then(response => response.json())
       .then(data => {
-        setUserLocation(data);
+        setUserLocation(data.myData.address);
         setProductInfo({
           ...productInfo,
-          latitude: data.lat,
-          longitude: data.long,
+          latitude: data.myData.latitude,
+          longitude: data.myData.longitude,
+          location: data.myData.address,
         });
+        setUserId(data.myData.writerId);
       });
   };
 
@@ -205,9 +227,10 @@ export default function ProductRegister() {
           <ProductNameInput
             placeholder="상품 제목을 입력해주세요."
             maxLength={39}
-            onChange={
-              (e => setCharCount(e.target.value.length), handleProductInfo)
-            }
+            onChange={e => {
+              handleProductInfo(e);
+              setCharCount(e.target.value.length);
+            }}
             name="name"
             value={name}
           />
@@ -224,18 +247,19 @@ export default function ProductRegister() {
             <ProductCategoryOption value="2">의류</ProductCategoryOption>
             <ProductCategoryOption value="1">전자기기</ProductCategoryOption>
             <ProductCategoryOption value="3">액세서리</ProductCategoryOption>
+            <ProductCategoryOption value="4">기타</ProductCategoryOption>
           </ProductCategorySelect>
         </ProductContentWrap>
         <ProductContentWrap>
           <ProductContentTitle>거래지역</ProductContentTitle>
           <ProductRegionInput>
             <RegionBtnWrap>
-              <RegionBtn onClick={getUserAddress}>주소 불러오기</RegionBtn>
+              <RegionBtn>주소 불러오기</RegionBtn>
               <RegionBtn onClick={getAddress}>현재 위치</RegionBtn>
             </RegionBtnWrap>
             <RegionInput
               placeholder="지역 설정"
-              value={userLocation || location}
+              value={userLocation}
               name="location"
               onChange={handleProductInfo}
             />
@@ -263,8 +287,11 @@ export default function ProductRegister() {
           <ProductPriceInput
             type="text"
             placeholder="숫자만 입력해주세요."
-            onChange={(changeEnteredNum, handleProductInfo)}
-            value={(enteredNum, price)}
+            onChange={e => {
+              changeEnteredNum(e);
+              handleProductInfo(e);
+            }}
+            value={price}
             name="price"
           />
           <ProductPriceWon>원</ProductPriceWon>
@@ -274,24 +301,23 @@ export default function ProductRegister() {
           <ProductExplanationInput
             placeholder="여러 장의 상품 사진과 구입 연도, 브랜드, 사용감, 하자 유무 등 구매자에게 필요한 정보를 꼭 포함해 주세요. (10자 이상)"
             maxLength={199}
-            onChange={
-              (e => setCharCount(e.target.value.length), handleProductInfo)
-            }
+            onChange={e => {
+              handleProductInfo(e);
+              setCharCount(e.target.value.length);
+            }}
             name="description"
             value={description}
           />
           <ProductInputLength>{charCount}/200</ProductInputLength>
         </ProductContentWrap>
       </RegisterProductContent>
-      <RegisterProductBtn onClick={(fetchImage, productInfoFetchFunc)}>
-        등록하기
-      </RegisterProductBtn>
+      <RegisterProductBtn onClick={fetchImage}>등록하기</RegisterProductBtn>
     </ProductRegisterWrap>
   );
 }
 
 const ProductRegisterWrap = styled.div`
-  padding: 50px 130px;
+  padding: 200px 130px 50px;
 `;
 
 const RegisterProductText = styled.div`

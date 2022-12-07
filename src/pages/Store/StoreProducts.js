@@ -15,15 +15,17 @@ export default function StoreProducts({ curruntMenu, userId }) {
           setItemList(result);
         });
     } else if (curruntMenu === '찜') {
-      fetch('/data/productsInfo.json')
-        // fetch(`${APIS.ipAddress}/`)
+      // fetch('/data/productsInfo.json')
+      fetch(`${APIS.ipAddress}/likes/${userId}`)
         .then(res => res.json())
         .then(result => {
-          setItemList(result);
+          setItemList(result.Likes_list);
         });
     } else if (curruntMenu === '구매내역') {
-      fetch('/data/productsInfo.json')
-        // fetch(`${APIS.ipAddress}/`)
+      // fetch('/data/productsInfo.json')
+      fetch(`${APIS.ipAddress}/orders`, {
+        headers: { authorization: localStorage.getItem('TOKEN') },
+      })
         .then(res => res.json())
         .then(result => {
           setItemList(result);

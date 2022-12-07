@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { APIS } from '../../config';
 import FollowUser from './FollowUser';
 
 export default function StoreFollow({ curruntMenu, userId }) {
   const [followList, setFollowList] = useState();
   useEffect(() => {
     if (curruntMenu === '팔로잉') {
-      fetch(`/data/followUserInfo${userId}.json`)
-        // fetch(`${APIS.ipAddress}/`)
+      // fetch(`/data/followUserInfo${userId}.json`)
+      fetch(`${APIS.ipAddress}/follow/${userId}`)
         .then(res => res.json())
         .then(result => {
           setFollowList(result);
         });
     } else if (curruntMenu === '팔로워') {
-      fetch(`/data/followUserInfo${userId}.json`)
-        // fetch(`${APIS.ipAddress}/`)
+      // fetch(`/data/followUserInfo${userId}.json`)
+
+      fetch(`${APIS.ipAddress}/followee/${userId}`)
         .then(res => res.json())
         .then(result => {
-          setFollowList(result);
+          setFollowList(result.followee_List);
         });
     }
   }, []);

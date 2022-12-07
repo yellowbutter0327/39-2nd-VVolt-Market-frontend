@@ -42,8 +42,11 @@ const ProductList = () => {
   useEffect(() => {
     // 현재위치 구하는 메소드
     navigator.geolocation.getCurrentPosition(pos => {
-      setCurrentLat(pos.coords.latitude);
-      setCurrentLng(pos.coords.lngitude);
+      if (pos.coords.latitude && pos.coords.lngitude) {
+        setCurrentLat(pos.coords.latitude);
+        setCurrentLng(pos.coords.lngitude);
+        alert('현재 위치를 가져왔습니다.');
+      }
     });
   }, []);
 
@@ -61,14 +64,12 @@ const ProductList = () => {
         fetch(`${APIS.ipAddress}/products`)
           .then(res => res.json())
           .then(result => {
-            console.log(result);
             setItemList(result);
           });
       } else {
         fetch(`${APIS.ipAddress}/products?category=${currentCategory}`)
           .then(res => res.json())
           .then(result => {
-            console.log(result);
             setItemList(result);
           });
       }
@@ -104,10 +105,10 @@ const ProductList = () => {
             const distance = getDistance(
               currentLat,
               currentlng,
-              obj.lat,
-              obj.lng
+              Number(obj.lat),
+              Number(obj.lng)
             );
-            if (distance < 3) {
+            if (distance < 4) {
               return obj;
             } else {
               return null;
@@ -137,16 +138,16 @@ const ProductList = () => {
           className="mySwiper"
         >
           <EachSlide>
-            <SlideImg src="https://media.bunjang.co.kr/images/nocrop/919158390_w2058.jpg" />
+            <SlideImg src="/images/slideImg3.png" />
           </EachSlide>
           <EachSlide>
-            <SlideImg src="https://media.bunjang.co.kr/images/nocrop/919673566_w2058.jpg" />
+            <SlideImg src="/images/slideImg2.png" />
           </EachSlide>
           <EachSlide>
-            <SlideImg src="https://media.bunjang.co.kr/images/nocrop/919571727_w2058.jpg" />
+            <SlideImg src="/images/slideImg1.png" />
           </EachSlide>
           <EachSlide>
-            <SlideImg src="https://media.bunjang.co.kr/images/nocrop/911382877_w2058.jpg" />
+            <SlideImg src="/images/slideImg4.png" />
           </EachSlide>
         </TopSlide>
         <CategorySelector>
@@ -166,11 +167,12 @@ const ProductList = () => {
             <CategoryOption value="의류">의류</CategoryOption>
             <CategoryOption value="전자기기">전자기기</CategoryOption>
             <CategoryOption value="액세서리">액세서리</CategoryOption>
+            <CategoryOption value="기타">기타</CategoryOption>
             <CategoryOption value="지역 서비스">지역 서비스</CategoryOption>
           </Selector>
         </CategorySelector>
         <ListTitle>
-          {category === '' ? '전체 상품' : category}의 추천 상품
+          {currentCategory === '' ? '전체 상품' : currentCategory}의 추천 상품
         </ListTitle>
         <WrapList>
           {itemList &&
@@ -185,6 +187,7 @@ const ProductList = () => {
 const WrapBody = styled.div`
   width: 100vw;
   background-color: #f9f9f9;
+  padding-top: 200px;
 `;
 const WrapProductList = styled.div`
   width: 1024px;

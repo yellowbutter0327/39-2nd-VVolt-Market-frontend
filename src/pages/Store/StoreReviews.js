@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import ReactStars from 'react-stars';
 import variables from '../../styles/variables';
 import StoreEachReview from './StroeEachReivew';
+import { APIS } from '../../config';
 
 export default function StoreReviews({ myData, userId }) {
   const [reviewList, setReviewList] = useState();
@@ -10,17 +11,18 @@ export default function StoreReviews({ myData, userId }) {
   const [registerScore, setRegisterScore] = useState(0.5);
 
   useEffect(() => {
-    fetch('/data/reviewList.json')
-      .then(res => res.json())
-      .then(result => {
-        setReviewList(result);
-      });
-    // //백엔드 fetch
-    // fetch('백엔드 api')
+    // fetch('/data/reviewList.json')
     //   .then(res => res.json())
     //   .then(result => {
-    //     setReviewList(result.review_list);
+    //     setReviewList(result);
     //   });
+    //백엔드 fetch
+    fetch(`${APIS.ipAddress}/review/${userId}`)
+      .then(res => res.json())
+      .then(result => {
+        console.log(result.review_list);
+        setReviewList(result.review_list);
+      });
   }, []);
 
   const addReview = e => {
@@ -32,15 +34,18 @@ export default function StoreReviews({ myData, userId }) {
         rate: registerScore,
         reviewContent: registerReview,
       });
-      fetch(`리뷰추가api주소`, {
+      //리뷰추가
+      fetch(`${APIS.ipAddress}/review`, {
         method: 'post',
         headers: {
           'Content-Type': 'application/json;charset=utf-8',
           authorization: localStorage.getItem('TOKEN'),
         },
         body: JSON.stringify({
-          rate: registerScore,
-          reviewContent: registerReview,
+          productId: 43,
+          userId: userId,
+          rating: registerScore,
+          contents: registerReview,
         }),
       })
         .then(res => {
@@ -104,7 +109,7 @@ const WrapReviewInput = styled.div`
 `;
 const Reviewinput = styled.textarea`
   width: 70%;
-  height: 200px;
+  height: 150px;
   margin: 0 80px 20px 50px;
   outline: none;
 `;

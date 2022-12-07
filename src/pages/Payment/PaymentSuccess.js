@@ -90,7 +90,7 @@ const SuccessContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 60px 0px 60px 0px;
+  padding: 200px;
 `;
 
 const PaymentSuccessImg = styled.img`

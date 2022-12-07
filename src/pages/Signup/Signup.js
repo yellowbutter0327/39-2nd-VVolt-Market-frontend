@@ -1,11 +1,14 @@
 /*global kakao*/
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { APIS } from '../../config';
 import variables from '../../styles/variables';
 import PopupPostCode from './SearchAddress/PopupPostCode';
 
 export default function Signup() {
+  const navigate = useNavigate();
   // 팝업창 상태 관리
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   // 상점 이름 값 관리
@@ -15,8 +18,8 @@ export default function Signup() {
   const [zoneCode, setZoneCode] = useState('');
   const [detailAddress, setDetailAddress] = useState('');
   // 위도 경도 값 관리
-  const [lat, setLat] = useState('');
-  const [long, setLong] = useState('');
+  const [lat, setLat] = useState();
+  const [long, setLong] = useState();
 
   const handleAddress = (fullAddr, zipCode) => {
     let geocoder = new kakao.maps.services.Geocoder();
@@ -72,7 +75,34 @@ export default function Signup() {
           onChange={e => setDetailAddress(e.target.value)}
         />
       </InputWrapper>
-      <SignUpButton>가입하기</SignUpButton>
+      <SignUpButton
+        onClick={() => {
+          fetch(`${APIS.ipAddress}/users/signup`, {
+            method: 'post',
+            headers: {
+              'Content-Type': 'application/json;charset=utf-8',
+              authorization: localStorage.getItem('TOKEN'),
+            },
+            body: JSON.stringify({
+              nickname: marketName,
+              address: fullAddress,
+              latitude: long,
+              longitude: lat,
+            }),
+          })
+            .then(res => {
+              if (res.status === 201) {
+                navigate('/?category=');
+                alert('회원가입에 성공하였습니다.');
+              } else {
+                throw new Error('회원가입에 실패하였습니다.');
+              }
+            })
+            .catch(error => alert(error));
+        }}
+      >
+        가입하기
+      </SignUpButton>
     </Wrapper>
   );
 }
@@ -81,6 +111,8 @@ const Wrapper = styled.div`
   ${variables.flex('column', '', '')};
   width: 300px;
   margin: 0 auto;
+  padding-top: 250px;
+  margin-bottom: 200px;
 `;
 
 const Title = styled.h1`
@@ -133,6 +165,7 @@ const Button = styled.button`
   border-radius: 5px;
   margin-left: 5px;
   background-color: #f9e000;
+  cursor: pointer;
 `;
 
 const InPutAdress = styled.input`
@@ -154,4 +187,5 @@ const SignUpButton = styled.button`
   border-radius: 5px;
   margin: 30px 0px 0px 10px;
   background-color: #f9e000;
+  cursor: pointer;
 `;

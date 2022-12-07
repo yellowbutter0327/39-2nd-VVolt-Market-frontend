@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import variables from '../../styles/variables';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { APIS } from '../../config';
 
 export default function Payment() {
+  const navigate = useNavigate();
   // 받아올 데이터 값 관리
   const [productList, setProductList] = useState([]);
   const [userInfo, setUserInfo] = useState([]);
@@ -13,7 +15,7 @@ export default function Payment() {
   // 결제수단 버튼 색 관리
   const [active, setActive] = useState(false);
   //토스
-  const REACT_APP_TOSS = `${process.env.REACT_APP_TOSS}`;
+
   //checkbox
   const [checkedBtn, setCheckedBtn] = useState([]);
   const [disabled, setDisabled] = useState(false);
@@ -35,15 +37,15 @@ export default function Payment() {
   const isdisabled = !isAllChecked;
 
   const onClickHandler = () => {
-    loadTossPayments(REACT_APP_TOSS).then(tossPayments => {
+    loadTossPayments(process.env.REACT_APP_TOSS).then(tossPayments => {
       tossPayments
         .requestPayment('카드', {
           // 결제 수단
           // 결제 정보
           amount: productList.productPrice,
-          orderId: localStorage.getItem('token'),
+          orderId: `111111111111${productId}`,
           orderName: productList.productName,
-          customerName: '박토스',
+          customerName: userInfo.realName,
           successUrl: 'http://localhost:3000/success',
           failUrl: 'http://localhost:3000/',
           flowMode: 'DIRECT',
@@ -60,22 +62,33 @@ export default function Payment() {
   };
 
   useEffect(() => {
-    fetch('/data/productDetail.json')
+    fetch(`${APIS.ipAddress}/products/${productId}`, {
+      headers: { authorization: localStorage.getItem('TOKEN') },
+    })
+      // fetch('/data/productDetail.json') //mockdata
       .then(res => res.json())
       .then(data => {
-        setProductList(data.productDetail[0]);
+        console.log(data);
+        setProductList(data.productDetailData.productDetail[0]);
       });
-    fetch('/data/sampleAddress.json')
-      .then(address => address.json())
-      .then(fulladdr => {
-        setUserInfo(fulladdr);
+
+    fetch(`${APIS.ipAddress}/users/1`, {
+      headers: { authorization: localStorage.getItem('TOKEN') },
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUserInfo(data.myData);
       });
   }, []);
 
   return (
     <PaymentContainer>
       <PruductPaymentWrap>
-        <BackIconButton>
+        <BackIconButton
+          onClick={() => {
+            navigate(`/productdetail/${productId}`);
+          }}
+        >
           <BackIcon src="https://cdn-icons-png.flaticon.com/512/271/271220.png" />
         </BackIconButton>
         <PaymentTitle>택배거래, 안전결제로 구매합니다.</PaymentTitle>
@@ -86,7 +99,7 @@ export default function Payment() {
               <ProductPrice>
                 {Number(productList.productPrice).toLocaleString()}원
               </ProductPrice>
-              <ProductName>{productList.ProductName}</ProductName>
+              <ProductName>{productList.productName}</ProductName>
             </SelectProductInfo>
           </SelectProduct>
         </ProductInfo>
@@ -99,12 +112,9 @@ export default function Payment() {
             <FullAddress>기본배송지</FullAddress>
           </BasicShipping>
           <UserInfo>
-            <UserName>???</UserName>
-            <UserAddress>
-              <UserZipCode>???</UserZipCode>
-              ???
-            </UserAddress>
-            <UserPhoneNum>???</UserPhoneNum>
+            <UserName>{userInfo.realName}</UserName>
+            <UserAddress>{userInfo.address}</UserAddress>
+            <UserPhoneNum>010-0000-000</UserPhoneNum>
           </UserInfo>
         </ShippingAddr>
       </OrderAddress>
@@ -186,6 +196,7 @@ export default function Payment() {
 }
 
 const PaymentContainer = styled.div`
+  padding-top: 200px;
   margin: 0 auto 30px auto;
   width: 600px;
 `;
@@ -206,6 +217,7 @@ const BackIconButton = styled.button`
   margin: 0px 0px 30px 0px;
   border: none;
   background-color: transparent;
+  cursor: pointer;
 `;
 
 const BackIcon = styled.img`
@@ -483,6 +495,7 @@ const PaymentAgreeBtn = styled.button`
   border-radius: 5px;
   color: #fff;
   background-color: #521978;
+  cursor: pointer;
 
   &:disabled {
     background-color: #d5d5d5;

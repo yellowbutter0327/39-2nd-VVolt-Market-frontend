@@ -1,5 +1,6 @@
 {
-  "isMyShop": true,
+  "isMyShop": false,
+  "isFollow": true,
   "myData": {
     "writerId": 1,
     "writerName": "testName1",

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { APIS } from '../../config';
 
 // 1. 메뉴에 마우스를 올리면 아이콘 변경 (+ 메뉴 출력)
 // 2. 메뉴에서 마우스를 빼면 아이콘 변경 (+ 메뉴 사라짐)
@@ -10,46 +11,88 @@ import styled from 'styled-components';
 // 6. state => true면 빨간 이미지, fll
 
 const Nav = () => {
+  const navigate = useNavigate();
+  const [userId, setUserId] = useState(1);
+  const [itemList, setItemList] = useState();
+  const [searchInput, setSearchInput] = useState();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const [isMenuMouseOn, setIsMenuMouseOn] = useState(false);
+  const isLoginCheck = !!localStorage.getItem('TOKEN');
 
-  const isLoginCheck = !!localStorage.getItem('token');
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.reload();
-  };
-
-  const alertlogin = () => {
-    alert('로그인 후 사용할 수 있습니다.');
-  };
-
+  useEffect(() => {
+    fetch(`${APIS.ipAddress}/users/1`, {
+      headers: { authorization: localStorage.getItem('TOKEN') },
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.myData.writerId);
+        setUserId(data.myData.writerId);
+      });
+    fetch(`${APIS.ipAddress}/products`)
+      .then(res => res.json())
+      .then(result => {
+        setItemList(result);
+      });
+  }, []);
   return (
     <Header>
       <InlineHeader>
         <MainLogo>
-          <Link to="/">
+          <Link to="/?category=">
             <MainlogoImg src="/images/mainlogo.png" alt="번개장터 로고" />
           </Link>
         </MainLogo>
 
         <SearchArea>
-          <SearchInput
-            type="text"
-            placeholder="상품명, 지역명, @상점명 입력"
-          ></SearchInput>
-          <SearchIcon
-            src="/images/searchicon.png"
-            alt="검색 아이콘"
-          ></SearchIcon>
+          <WrapSearch>
+            <SearchInput
+              type="text"
+              placeholder="상품명, 지역명, @상점명 입력"
+              value={searchInput}
+              onChange={e => setSearchInput(e.target.value)}
+            ></SearchInput>
+            <SearchIcon
+              src="/images/searchicon.png"
+              alt="검색 아이콘"
+            ></SearchIcon>
+          </WrapSearch>
+          <WrapSearchedList>
+            {itemList &&
+              itemList.map((obj, index) => {
+                if (
+                  obj.productName.includes(searchInput) &&
+                  searchInput !== ''
+                ) {
+                  return (
+                    <SearchedList
+                      onClick={() => {
+                        navigate(`/productdetail/${obj.productId}`);
+                      }}
+                    >
+                      {obj.productName}
+                    </SearchedList>
+                  );
+                } else {
+                  return null;
+                }
+              })}
+          </WrapSearchedList>
         </SearchArea>
 
         <LinkArea>
           <SellArea>
             <SellIcon src="/images/sellicon.png" alt="판매 아이콘"></SellIcon>
-            <Selling>판매하기</Selling>
-            {isLoginCheck ? <Link to="/productregister"></Link> : alertlogin}
+            <Selling
+              onClick={() => {
+                if (localStorage.getItem('TOKEN')) {
+                  navigate('/productregister');
+                } else {
+                  alert('로그인이 필요한 서비스입니다.');
+                }
+              }}
+            >
+              판매하기
+            </Selling>
           </SellArea>
 
           <Mystore>
@@ -57,8 +100,17 @@ const Nav = () => {
               src="/images/mystoreicon.png"
               alt="내 상점 아이콘"
             ></MystoreIcon>
-            <MystoreSpan>내상점</MystoreSpan>
-            {isLoginCheck ? <Link to="/store"></Link> : alertlogin}
+            <MystoreSpan
+              onClick={() => {
+                if (localStorage.getItem('TOKEN') && userId) {
+                  navigate(`/store/${userId}`);
+                } else {
+                  alert('로그인이 필요한 서비스입니다.');
+                }
+              }}
+            >
+              내상점
+            </MystoreSpan>
           </Mystore>
 
           <LoginArea>
@@ -66,9 +118,15 @@ const Nav = () => {
               src="/images/loginicion.png"
               alt="로그인 회원가입 아이콘"
             ></LoginIcon>
-            {/* <LoginSpan>회원가입/로그인</LoginSpan> */}
             {isLoginCheck ? (
-              <LogoutTitlespan to="/login">로그아웃</LogoutTitlespan>
+              <LogoutTitlespan
+                to="/login"
+                onClick={() => {
+                  localStorage.removeItem('TOKEN');
+                }}
+              >
+                로그아웃
+              </LogoutTitlespan>
             ) : (
               <LogTitleSpan to="/login">회원가입/로그인</LogTitleSpan>
             )}
@@ -99,24 +157,28 @@ const Nav = () => {
               }}
             >
               <DropBoxUl>
-                <DropBoxCtHeadTop>
-                  <DropBoxCt1>전체 카테고리</DropBoxCt1>
-                </DropBoxCtHeadTop>
-
                 <DropBoxCtHead>
-                  <DropBoxCt to="/?catagory=의류">의류</DropBoxCt>
+                  <DropBoxCt to="/?category=">전체</DropBoxCt>
                 </DropBoxCtHead>
 
                 <DropBoxCtHead>
-                  <DropBoxCt to="/?catagory=액세사리">액세사리</DropBoxCt>
+                  <DropBoxCt to="/?category=의류">의류</DropBoxCt>
                 </DropBoxCtHead>
 
                 <DropBoxCtHead>
-                  <DropBoxCt to="/?catagory=전자기기">전자기기</DropBoxCt>
+                  <DropBoxCt to="/?category=액세서리">액세서리</DropBoxCt>
                 </DropBoxCtHead>
 
                 <DropBoxCtHead>
-                  <DropBoxCt to="/?catagory=지역+서비스">지역 서비스</DropBoxCt>
+                  <DropBoxCt to="/?category=전자기기">전자기기</DropBoxCt>
+                </DropBoxCtHead>
+
+                <DropBoxCtHead>
+                  <DropBoxCt to="/?category=기타">기타</DropBoxCt>
+                </DropBoxCtHead>
+
+                <DropBoxCtHead>
+                  <DropBoxCt to="/?category=지역+서비스">지역 서비스</DropBoxCt>
                 </DropBoxCtHead>
               </DropBoxUl>
             </DropBox>
@@ -148,27 +210,25 @@ const InlineHeader = styled.div`
 const MainLogo = styled.h1``;
 
 const MainlogoImg = styled.img`
-  width: 136px;
-  height: 40px;
+  width: 140px;
+  height: 60px;
+  margin-left: 10px;
 `;
 
 const SearchArea = styled.div`
-  border: 3px solid #dca8ff;
-  width: 500px;
-  height: 40px;
-  box-sizing: border-box;
-  align-items: center;
-  position: relative;
+  margin-top: 55px;
+  z-index: 110;
 `;
 
 const SearchInput = styled.input`
+  display: inline-block;
   margin-left: 10px;
-  padding: 8px 0px;
+  padding: 4px 0px 0px;
   width: 290px;
-  color: #aaa;
   border: none;
   text-align: left;
   font-size: 15px;
+  outline: none;
 `;
 
 const SearchIcon = styled.img`
@@ -181,12 +241,14 @@ const SearchIcon = styled.img`
 const Selling = styled.span`
   padding-right: 10px;
   border-right-color: black;
+  cursor: pointer;
 `;
 
 const Mystore = styled.div`
   margin-left: 30px;
   display: flex;
   align-items: center;
+  cursor: pointer;
 `;
 
 const MystoreIcon = styled.img`
@@ -231,11 +293,13 @@ const LoginIcon = styled.img`
 const LogTitleSpan = styled(Link)`
   text-decoration: none;
   color: black;
+  cursor: pointer;
 `;
 
 const LogoutTitlespan = styled(Link)`
   text-decoration: none;
   color: black;
+  cursor: pointer;
 `;
 
 const UnderHeader = styled.div`
@@ -281,8 +345,10 @@ const DropBoxCtHead = styled.div`
   padding-bottom: 10px;
   justify-content: left;
   align-items: center;
+  line-height: 5px;
+  transition: 0.08s;
   &:hover {
-    background-color: #d80c18;
+    background-color: #882dc4;
     color: #ddd;
   }
 `;
@@ -311,6 +377,25 @@ const WrapTab = styled.div`
   left: 0px;
   width: 310px;
   height: 300px;
+`;
+
+const WrapSearch = styled.div`
+  border: 3px solid #dca8ff;
+  width: 500px;
+  height: 40px;
+  box-sizing: border-box;
+  align-items: center;
+  position: relative;
+`;
+const WrapSearchedList = styled.div`
+  width: 470px;
+  height: 50px;
+  padding: 10px;
+  overflow: scroll;
+  cursor: pointer;
+`;
+const SearchedList = styled.div`
+  line-height: 130%;
 `;
 
 export default Nav;

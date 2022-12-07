@@ -7,6 +7,9 @@ import variables from '../../styles/variables';
 import StoreProducts from './StoreProducts';
 import StoreReviews from './StoreReviews';
 import StoreFollow from './StoreFollow';
+import { format, register } from 'timeago.js';
+import koLocale from 'timeago.js/lib/lang/ko'; // 한글로 변환
+register('ko', koLocale);
 
 export default function Store() {
   const [storeData, setStoreData] = useState();
@@ -33,30 +36,21 @@ export default function Store() {
 
   //유저 정보 fetch
   useEffect(() => {
-    // //백엔드 서버에서 fetch
-    // fetch(`${APIS.ipAddress}/users/${userId}`, {
-    //   method: 'get',
-    //   headers: {
-    //     authorization: localStorage.getItem('TOKEN'),
-    //   },
-    // })
-    //   .then(res => res.json())
-    //   .then(result => {
-    //     if (result.status === 200) {
-    //       setStoreData(result.shopData);
-    //       setIsMyShop(result.IsMyShop);
-    //       setMyData(result.myData);
-    //       setFileImage(result.shopData.sellerImg);
-    //       setChangedStoreName(result.shopData.sellerName);
-    //       setChangedStoreInfo(result.shopData.sellerIntro);
-    //     } else {
-    //       console.log('상점 정보get에 실패 하였습니다.');
-    //     }
-    //   });
-
-    //mockdata fetch
-    fetch('/data/storeInfo.json')
-      .then(res => res.json())
+    //백엔드 서버에서 fetch
+    fetch(`${APIS.ipAddress}/users/${userId}`, {
+      method: 'get',
+      headers: {
+        authorization: localStorage.getItem('TOKEN'),
+      },
+    })
+      .then(res => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          throw new Error('상점 정보 get에 실패하였습니다.');
+        }
+      })
+      .catch(error => alert(error))
       .then(result => {
         setStoreData(result.shopData);
         setIsMyShop(result.isMyShop);
@@ -64,8 +58,21 @@ export default function Store() {
         setFileImage(result.shopData.sellerImg);
         setChangedStoreName(result.shopData.sellerName);
         setChangedStoreInfo(result.shopData.sellerIntro);
+        setFollowIsCheck(result.isFollow);
       });
-  }, [userId]);
+    // //mockdata fetch
+    // fetch('/data/storeInfo.json')
+    //   .then(res => res.json())
+    //   .then(result => {
+    //     setStoreData(result.shopData);
+    //     setIsMyShop(result.isMyShop);
+    //     setMyData(result.myData);
+    //     setFileImage(result.shopData.sellerImg);
+    //     setChangedStoreName(result.shopData.sellerName);
+    //     setChangedStoreInfo(result.shopData.sellerIntro);
+    //     setFollowIsCheck(result.isFollow);
+    //   });
+  }, []);
 
   const menuChange = e => {
     setMenuState({
@@ -91,54 +98,24 @@ export default function Store() {
     // setFileImage(URL.createObjectURL(event.target.files[0])); // 백엔드 연결 시 주석처리
 
     // 백엔드에 보내줄 이미지파일을 폼데이터로 저장
-    formData.append('image', event.target.files);
+    formData.append('image', event.target.files[0]);
 
     //이미지 수정 formData 보내기
+    console.log(formData);
     fetch(`${APIS.ipAddress}/users`, {
-      method: 'patch',
+      method: 'put',
       headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-        authorization: localStorage.getItem('TOKEN'),
+        Authorization: localStorage.getItem('TOKEN'),
       },
       body: formData,
     })
       .then(res => {
         if (res.status === 200) {
-          console.log('이미지 전송에 성공');
-          // //이미지 url받기
-          // fetch(`이미지 url받는 api`)
-          //   .then(res => {
-          //     if (res.status === 200) {
-          //       console.log('이미지 url받기 성공');
-          //       const recievedImgUrl = res;
-          //       //받은 이미지 url 다시 수정요청하기
-          //       fetch('이미지 변경 api주소', {
-          //         method: 'patch',
-          //         headers: {
-          //           'Content-Type': 'application/json;charset=utf-8',
-          //           authorization: localStorage.getItem('TOKEN'),
-          //         },
-          //         body: JSON.stringify({
-          //           user_image: recievedImgUrl,
-          //         }),
-          //       })
-          //         .then(res => {
-          //           if (res.status === 200) {
-          //             alert('프로필 사진이 변경되었습니다.');
-          //             //프론트상에서 이미지 변경
-          //             setFileImage(URL.createObjectURL(event.target.files[0]));
-          //           } else {
-          //             throw new Error('프로필 사진 변경실패');
-          //           }
-          //         })
-          //         .catch(error => alert('프로필 사진 변경에 실패하였습니다.'));
-          //     } else {
-          //       throw new Error('이미지 url 받기 실패');
-          //     }
-          //   })
-          //   .catch(error => alert(error));
+          console.log('이미지 수정 성공');
+          //프론트상에서 이미지 변경
+          setFileImage(URL.createObjectURL(event.target.files[0]));
         } else {
-          throw new Error('이미지 전송실패');
+          throw new Error('이미지 수정 실패');
         }
       })
       .catch(error => alert(error));
@@ -173,18 +150,15 @@ export default function Store() {
                         if (followIsCheck) {
                           // setFollowIsCheck(false); // 백연드 열결시 주석처리
 
-                          fetch('팔로우 취소 api주소', {
-                            method: 'patch',
+                          fetch(`${APIS.ipAddress}/follow/${userId}`, {
+                            method: 'post',
                             headers: {
                               'Content-Type': 'application/json;charset=utf-8',
                               authorization: localStorage.getItem('TOKEN'),
                             },
-                            body: JSON.stringify({
-                              follow: false,
-                            }),
                           })
                             .then(res => {
-                              if (res.status === 200) {
+                              if (res.status === 201) {
                                 alert('팔로잉 취소 되었습니다.');
                                 setFollowIsCheck(false);
                               } else {
@@ -193,24 +167,18 @@ export default function Store() {
                                 );
                               }
                             })
-                            .catch(error =>
-                              alert('팔로잉 취소에 실패하였습니다.')
-                            );
+                            .catch(error => alert('어떻게 사랑이 변하니....'));
                         } else {
                           // setFollowIsCheck(true); // 백연드 열결시 주석처리
-                          fetch('팔로잉 하기 api주소', {
-                            method: 'patch',
+                          fetch(`${APIS.ipAddress}/follow/${userId}`, {
+                            method: 'post',
                             headers: {
                               'Content-Type': 'application/json;charset=utf-8',
-
                               authorization: localStorage.getItem('TOKEN'),
                             },
-                            body: JSON.stringify({
-                              follow: true,
-                            }),
                           })
                             .then(res => {
-                              if (res.status === 200) {
+                              if (res.status === 201) {
                                 alert('팔로잉 성공하였습니다..');
                                 setFollowIsCheck(true);
                               } else {
@@ -264,7 +232,7 @@ export default function Store() {
                         //   sellerName: changedStoreName,
                         // }));
                         fetch(`${APIS.ipAddress}/users`, {
-                          method: 'patch',
+                          method: 'put',
                           headers: {
                             'Content-Type': 'application/json;charset=utf-8',
                             authorization: localStorage.getItem('TOKEN'),
@@ -296,7 +264,9 @@ export default function Store() {
                 )}
               </RightStoreName>
               <StoreInfo>
-                <InfoSpan>🏠 상점 오픈일 ??? 일 전</InfoSpan>
+                <InfoSpan>
+                  🏠 상점 오픈일 {format(storeData.sellerOpenDay, 'ko')}
+                </InfoSpan>
                 <InfoSpan>📦 상품 판매 {storeData.soldOutNum} 회</InfoSpan>
               </StoreInfo>
               <StoreTxt>
@@ -322,7 +292,7 @@ export default function Store() {
                         // }));
 
                         fetch(`${APIS.ipAddress}/users`, {
-                          method: 'patch',
+                          method: 'put',
                           headers: {
                             'Content-Type': 'application/json;charset=utf-8',
                             authorization: localStorage.getItem('TOKEN'),
@@ -467,6 +437,7 @@ export default function Store() {
 
 const WrapBody = styled.div`
   width: 100vw;
+  padding-top: 200px;
 `;
 const WrapStore = styled.div`
   width: 1024px;
