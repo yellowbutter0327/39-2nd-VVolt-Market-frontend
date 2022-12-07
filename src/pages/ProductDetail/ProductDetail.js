@@ -1,161 +1,192 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Autoplay, Navigation } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/css/bundle';
 import iconHour from './../../assets/images/hour.png';
 import iconHeart from './../../assets/images/heart.png';
-import iconView from './../../assets/images/view.png';
 import iconLocal from './../../assets/images/localicon.png';
-import starRatingBg from './../../assets/images/icon_star_score_bg.png';
-import starRating from './../../assets/images/icon_star_score.png';
-import Store from '../Store/Store';
+import Heart from './../../assets/images/heartbtn.png';
+import Heart2 from './../../assets/images/heart2.png';
+import { useParams } from 'react-router-dom';
 
 export default function ProductDetail() {
-  const [productDetail, setProductDetail] = useState([]);
+  const [productDetail, setProductDetail] = useState();
+  const [storeInfo, setStoreInfo] = useState();
+  const params = useParams();
+  const productId = params.id;
+  const navigate = useNavigate();
+
+  const purchaseLink = () => {
+    if (localStorage.getItem('TOKEN')) {
+      navigate(`/payment/${productId}`);
+    } else {
+      alert('로그인이 필요한 서비스입니다.');
+    }
+  };
+
+  const productMore = () => {
+    navigate(`/store/${productDetail.storeId}`);
+  };
 
   useEffect(() => {
-    fetch('/data/productDetail.json', {
-      method: 'GET',
-    })
+    // fetch(`상품디테일정보 가져오는 api/${productId}`)
+    fetch('/data/productDetail.json')
       .then(res => res.json())
       .then(data => {
-        setProductDetail(data);
+        console.log(data);
+        setProductDetail(data.productDetail[0]);
+        setStoreInfo(data.storeInfor);
       });
   }, []);
 
+  const [isActive, setIsActive] = useState(true);
+
+  const handleClick = () => {
+    setIsActive(current => !current);
+  };
+
+  const [isWishAdd, setIsWishAdd] = useState(false);
+  const [wishCount, setWishCount] = useState(808);
+
+  const wishAddHandler = () => {
+    setIsWishAdd(!isWishAdd);
+  };
+
   return (
-    <MainWrap>
-      {productDetail.map(productItem => {
-        return (
-          <>
-            <InfoWrap>
-              <ProductImg
-                src={productItem.productThumbnail}
-                alt={productItem.productTitle}
-              ></ProductImg>
-              <ProductName>{productItem.productTitle}</ProductName>
-              <Price>{productItem.productPrice.toLocaleString()}원</Price>
-              <StatusList>
-                <StatusIcon>
-                  <StatusIconImg src={iconHeart} />
-                  {productItem.productWish}
-                </StatusIcon>
-                <StatusIcon>
-                  <StatusIconImg src={iconView} /> {productItem.productView}
-                </StatusIcon>
-                <StatusIcon>
-                  <StatusIconImg src={iconHour} />
-                  {productItem.productTime} 전
-                </StatusIcon>
-              </StatusList>
+    <>
+      {productDetail && (
+        <MainWrap>
+          <InfoWrap>
+            <Banner
+              spaceBetween={30}
+              centeredSlides={true}
+              navigation={true}
+              modules={[Navigation]}
+              className="mySwiper"
+            >
+              {productDetail &&
+                productDetail.images.map((str, index) => {
+                  return (
+                    <ImgSwiperSlide key={index}>
+                      <SlideImg src={str} alt={productDetail.productName} />
+                    </ImgSwiperSlide>
+                  );
+                })}
+            </Banner>
 
-              <DetailList>
-                <ListElement>
-                  <ListElementTit>상품상태</ListElementTit>
-                  {productItem.productState}
-                </ListElement>
-                <ListElement>
-                  <ListElementTit>거래지역</ListElementTit>
-                  <ListElementIcon src={iconLocal} /> {productItem.productLocal}
-                </ListElement>
-              </DetailList>
+            <ProductName>{productDetail.productName}</ProductName>
+            <Price>
+              {Number(productDetail.productPrice).toLocaleString()}원
+            </Price>
+            <StatusList>
+              <StatusIcon>
+                <StatusIconImg src={iconHeart} />
+                {productDetail.likeCount}
+              </StatusIcon>
+              {/* <StatusIcon>
+            <StatusIconImg src={iconView} /> {productDetail.productView}
+          </StatusIcon> */}
+              <StatusIcon>
+                <StatusIconImg src={iconHour} />
+                10분 전
+              </StatusIcon>
+            </StatusList>
 
-              <ButtonWrap>
-                <InfoButton>찜</InfoButton>
-                <InfoButton>바로구매</InfoButton>
-              </ButtonWrap>
-            </InfoWrap>
+            <DetailList>
+              <ListElement>
+                <ListElementTit>상품상태</ListElementTit>
+                중고상품
+              </ListElement>
+              <ListElement>
+                <ListElementTit>거래지역</ListElementTit>
+                <ListElementIcon src={iconLocal} /> {productDetail.location}
+              </ListElement>
+            </DetailList>
 
-            <DetailWrap>
-              <ProductInfo>
-                <PdTitle>상품정보</PdTitle>
-                <PdText> {productItem.productInfo} </PdText>
-              </ProductInfo>
+            <ButtonWrap>
+              <InfoButton
+                onClick={() => {
+                  if (localStorage.getItem('TOKEN')) {
+                    if (isActive) {
+                      //좋아요 추가
+                      setProductDetail({
+                        ...productDetail,
+                        likeCount: `${Number(productDetail.likeCount) + 1}`,
+                      });
+                    } else {
+                      //좋아요 취소
+                      setProductDetail({
+                        ...productDetail,
+                        likeCount: `${Number(productDetail.likeCount) - 1}`,
+                      });
+                    }
+                    handleClick();
+                  } else {
+                    alert('로그인이 필요한 서비스 입니다.');
+                  }
+                  // {
+                  //   // wishCountHandler;
+                  // }
+                }}
+                isActive={isActive}
+              >
+                {/* <LikeImg src={isWishAdd ? { Heart } : { Heart2 }}></LikeImg>  */}
+                찜<LikeNumber> {productDetail.likeCount}</LikeNumber>
+              </InfoButton>
 
-              <StoreInfo>
-                <StoreBox>
-                  <PdTitle>상점정보</PdTitle>
-                  <StoreName>{productItem.storeName}</StoreName>
-                  <StoreUl>
-                    <StoreLi> 상품 {productItem.storeItem} </StoreLi>
-                    <StoreLi> 팔로워 {productItem.storeFollower}</StoreLi>
-                  </StoreUl>
-                  <StoreFollowBtn>팔로우 </StoreFollowBtn>
+              <StoreBtn onClick={purchaseLink}>바로구매</StoreBtn>
+            </ButtonWrap>
+          </InfoWrap>
 
-                  <StoreImgList>
-                    <StoreImgLi>
-                      <StoreImg src={productItem.storeProduct[0].storeImg} />
-                      <StorePrice>
-                        {productItem.storeProduct[0].storePrice.toLocaleString()}
-                        원
-                      </StorePrice>
-                    </StoreImgLi>
-                    <StoreImgLi>
-                      <StoreImg src={productItem.storeProduct[1].storeImg} />
-                      <StorePrice>
-                        {productItem.storeProduct[1].storePrice.toLocaleString()}
-                        원
-                      </StorePrice>
-                    </StoreImgLi>
-                    <StoreImgLi>
-                      <StoreImg src={productItem.storeProduct[0].storeImg} />
-                      <StorePrice>
-                        {productItem.storeProduct[0].storePrice.toLocaleString()}
-                        원
-                      </StorePrice>
-                    </StoreImgLi>
-                    <StoreImgLi>
-                      <StoreImg src={productItem.storeProduct[0].storeImg} />
-                      <StorePrice>
-                        {productItem.storeProduct[0].storePrice.toLocaleString()}
-                        원
-                      </StorePrice>
-                    </StoreImgLi>
-                    <StoreImgLi>
-                      <StoreImg src={productItem.storeProduct[0].storeImg} />
-                      <StorePrice>
-                        {productItem.storeProduct[0].storePrice.toLocaleString()}
-                        원
-                      </StorePrice>
-                    </StoreImgLi>
-                  </StoreImgList>
+          <DetailWrap>
+            <ProductInfo>
+              <PdTitle>상품정보</PdTitle>
+              <PdText> {productDetail.productDesc} </PdText>
+            </ProductInfo>
 
-                  <StoreMoreBtn>
-                    <BtnRed>13개</BtnRed>
-                    상품 더보기
-                  </StoreMoreBtn>
-                </StoreBox>
+            <StoreInfo>
+              <StoreBox>
+                <PdTitle>상점정보</PdTitle>
+                <StoreName>{storeInfo[0].nickName}</StoreName>
+                <StoreUl>
+                  <StoreLi> 상품 {storeInfo[0].productCount}개 </StoreLi>
+                  <StoreLi> 팔로워 {storeInfo[0].followerCount} </StoreLi>
+                </StoreUl>
 
-                <StoreBox>
-                  <SubTit>
-                    상점후기
-                    <TitNum>1</TitNum>
-                  </SubTit>
-                  <StoreReviewList>
-                    <StoreReviewLi>
-                      <StoreReviewImgbox>
-                        <StoreReviewImg src={productItem.reviewImg} />
-                      </StoreReviewImgbox>
-                      <StoreNickName>누냥2</StoreNickName>
-                      <StoreDate>3주 전</StoreDate>
-                      <StoreStarRating>
-                        <StoreRating
-                          style={{ width: `${productItem.starRating}%` }}
-                        ></StoreRating>
-                      </StoreStarRating>
-                      <StoreTxt>{productItem.reviewTxt}</StoreTxt>
-                    </StoreReviewLi>
-                  </StoreReviewList>
-                  <StoreMoreBtn>상점후기 더보기</StoreMoreBtn>
-                </StoreBox>
+                <StoreImgList>
+                  <StoreImgLi>
+                    <StoreImg src={storeInfo[0].images} />
+                    <StorePrice>
+                      {Number(storeInfo[0].price).toLocaleString()}원
+                    </StorePrice>
+                  </StoreImgLi>
+                  <StoreImgLi>
+                    <StoreImg src={storeInfo[1].images} />
+                    <StorePrice>
+                      {Number(storeInfo[1].price).toLocaleString()}원
+                    </StorePrice>
+                  </StoreImgLi>
+                </StoreImgList>
 
-                <StoreBtnWrap>
-                  <StoreBtn>바로구매</StoreBtn>
-                </StoreBtnWrap>
-              </StoreInfo>
-            </DetailWrap>
-          </>
-        );
-      })}
-    </MainWrap>
+                <StoreMoreBtn onClick={productMore}>
+                  <BtnRed>{storeInfo[0].productCount - 2}개 </BtnRed>
+                  상품 더보기
+                </StoreMoreBtn>
+              </StoreBox>
+
+              <StoreBtnWrap>
+                <StoreBtn onClick={purchaseLink}>바로구매</StoreBtn>
+              </StoreBtnWrap>
+            </StoreInfo>
+          </DetailWrap>
+        </MainWrap>
+      )}
+    </>
   );
 }
 
@@ -261,11 +292,18 @@ const InfoButton = styled.button`
   font-size: 20px;
   font-weight: bold;
   border: none;
-  background: #ddd;
-  & + & {
+  background-color: ${props => (props.isActive ? '#cccccc' : '#333333')};
+  /* 
+   {
+    isactive?'salmon': '';
+  }
+  color: {
+    isactive?'white': '';
+  } */
+  /* & + & {
     margin-left: 10px;
     background: #f70000;
-  }
+  } */
 `;
 
 const PdTitle = styled.div`
@@ -375,66 +413,6 @@ const BtnRed = styled.span`
   color: red;
 `;
 
-const SubTit = styled.div`
-  font-size: 18px;
-`;
-
-const TitNum = styled.span`
-  color: red;
-  margin-left: 5px;
-`;
-
-const StoreReviewList = styled.ul`
-  margin-top: 15px;
-`;
-
-const StoreReviewLi = styled.li`
-  position: relative;
-  padding-left: 45px;
-`;
-
-const StoreReviewImgbox = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  overflow: hidden;
-`;
-
-const StoreReviewImg = styled.img`
-  width: 100%;
-`;
-
-const StoreNickName = styled.span`
-  color: #999;
-`;
-
-const StoreDate = styled.span`
-  color: #999;
-  font-size: 14px;
-  margin-left: 5px;
-`;
-
-const StoreStarRating = styled.div`
-  margin: 10px 0 0;
-  width: 100px;
-  height: 20px;
-  background: url(${starRatingBg}) no-repeat;
-  background-size: 100px 20px;
-`;
-
-const StoreRating = styled.div`
-  height: 20px;
-  background: url(${starRating}) no-repeat;
-  background-size: 100px 20px;
-`;
-
-const StoreTxt = styled.div`
-  margin-top: 10px;
-`;
-
 const StoreBtnWrap = styled.div`
   margin-top: 50px;
 `;
@@ -447,4 +425,32 @@ const StoreBtn = styled.button`
   font-weight: bold;
   border: none;
   background: #f70000;
+`;
+
+// const EachImg = styled(SwiperSlide)``;
+// const PdtSlideImg = styled.img`
+//   width: 100%;
+//   height: 300px;
+// `;
+
+const LikeNumber = styled.span``;
+
+const Banner = styled(Swiper)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 428px;
+`;
+
+const ImgSwiperSlide = styled(SwiperSlide)``;
+
+const SlideImg = styled.img`
+  width: 428px;
+  height: 428px;
+  border: 1px solid black;
+`;
+
+const LikeImg = styled.img`
+  width: 20px;
+  line-height: 20px;
 `;

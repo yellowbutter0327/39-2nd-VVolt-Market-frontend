@@ -8,21 +8,26 @@
       "location": "선릉역앞",
       "lat": "39.19270000000000",
       "lng": "129.12938000000000",
-      "images": ["맥북이미지", "맥북이미지2", "맥북이미지3"],
-      "likeCount": "0"
+      "images": ["/images/product_img_1.jpg", "맥북이미지2", "맥북이미지3"],
+      "likeCount": "8"
     }
   ],
   "storeInfor": [
     {
       "nickName": "lukas",
       "price": "10000000",
-      "images": ["맥북이미지", "맥북이미지2", "맥북이미지3"],
-      "followerCount": "0"
+      "images": [
+        "/images/product_img_4.jpg",
+        "맥북이미지",
+        "맥북이미지2",
+        "맥북이미지3"
+      ],
+      "followerCount": "0",
+      "productCount": "5"
     },
     {
       "nickName": "lukas",
       "price": "80000",
-
       "images": ["모니터 이미지", "모니터 이미지2", "모니터 이미지3"],
       "followerCount": "0"
     },
