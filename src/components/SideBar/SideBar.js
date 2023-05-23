@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import qrimg from './../../assets/images/qrcode.png';
 
-export default function SideBar() {
+const SideBar = () => {
   const navigate = useNavigate();
+  const [recentProduct, setRecentProduct] = useState([]);
+
   const scrollToTop = () => {
     window.scroll({
       top: 0,
@@ -12,9 +14,7 @@ export default function SideBar() {
     });
   };
 
-  const [recentProduct, setRecentProduct] = useState([]);
   useEffect(() => {
-    //로컬 스토리지 불러오기
     if (localStorage.getItem('recentProduct')) {
       const products = JSON.parse(localStorage.getItem('recentProduct'));
       setRecentProduct(products);
@@ -49,12 +49,12 @@ export default function SideBar() {
       </ProductWrap>
       <ProductWrap>
         <ProductTitle>앱다운로드</ProductTitle>
-        <QrImg src={qrimg}></QrImg>
+        <QrImg src={qrimg} />
       </ProductWrap>
       <TopButton onClick={scrollToTop}>TOP</TopButton>
     </SidebarWrap>
   );
-}
+};
 
 const SidebarWrap = styled.div`
   width: 90px;
@@ -122,3 +122,5 @@ const ProductImg = styled.img`
   margin-bottom: 10px;
   cursor: pointer;
 `;
+
+export default SideBar;
