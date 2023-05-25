@@ -10,6 +10,10 @@
 ## 📼 DEMO
 
 - <a href="https://www.youtube.com/watch?v=UDNfYsCpGR4">📎 구동 영상</a>
+  
+- <a href="https://url.kr/8gparh">📎 회고록 </a>
+  
+- <a href="https://alive-cucumber-b08.notion.site/VVolt-Market-561ecc1ebce149db9685741a645699ce">📎 notion</a>
 
 ## 👩‍💻 DB Modeling
 
@@ -29,7 +33,7 @@
 - 🔵 `지민 FE` - 소셜로그인 페이지, 상품등록 페이지
 - 🔵 `동섭 FE` - 상품리스트 페이지, 상점페이지, footer
 - 🔵 `효원 FE` - 회원가입 페이지, 결제 페이지
-- 🔵 `은혜 FE` - nav, side바, 상품 디테이 페이지
+- 🔵 `은혜 FE` - nav, side바, 상품 디테일 페이지
 
 
 ## 🛠 VVolt Martket Tools
@@ -45,12 +49,18 @@
 
 ## 🚀 구현 기능
 
-1. 사용자에게 편리를 제공하기 위한 로그인 서비스
-1. 상품 검색
-1. 주변 중고물품 검색
-1. 상품 등록
-1. 상품 구매
+- 사용자에게 편리를 제공하기 위한 로그인 서비스
+- 상품 검색
+- 주변 중고물품 검색
+- 상품 등록
+- 상품 구매
 
+  
+  
+  
+  
+  
+  
 
 <br>
 
