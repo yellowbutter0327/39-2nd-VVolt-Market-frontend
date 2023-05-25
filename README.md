@@ -55,13 +55,61 @@
 - 상품 등록
 - 상품 구매
 
+
+ 메인 페이지 상품 등록하기 
   
   
+  ### nav
+ ![](https://velog.velcdn.com/images/yellowbutter0327/post/601e9c93-2c4c-48ea-9a33-b4a21237da5d/image.png)
+
+![](https://velog.velcdn.com/images/yellowbutter0327/post/3ef52f8a-c63e-4703-938b-85392010ab8a/image.gif)
+
+  ### sidebar
   
+![](https://velog.velcdn.com/images/yellowbutter0327/post/4b47284b-2ab6-4715-82e5-87804ece21ae/image.gif)
+ 
+  ### 소셜로그인
+  ![CleanShot 2023-05-25 at 16 39 53](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/770c1b87-ade6-41f5-89d6-a11863d1bfe4)
+
+  ### 회원가입
   
+  ![CleanShot 2023-05-25 at 16 41 07](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/331441ed-1048-4964-a777-4898ab9dd33e)
+
+   ### 메인 페이지
   
+  ![CleanShot 2023-05-25 at 16 42 47](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/816223a4-2225-4f73-94ce-606b802434ed)
+  
+  ### 상품 상세 페이지
+ 
+  
+  ![](https://velog.velcdn.com/images/yellowbutter0327/post/4b47284b-2ab6-4715-82e5-87804ece21ae/image.gif)
+  
+![](https://velog.velcdn.com/images/yellowbutter0327/post/464456ac-b188-43e4-8fba-f8b40d3c32c3/image.gif)
+
+
+  
+   ### 상품 등록하기
+  ![CleanShot 2023-05-25 at 16 46 27](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/a8d3a79e-f484-4a4e-b573-4d48f31be528)
+
+  ![CleanShot 2023-05-25 at 16 47 10](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/2512717d-1987-4aef-84a1-8f3c6cb8b0a5)
+  
+   ### 스토어 페이지 - 소토어 리뷰 등록하기, 다른 스토어 보기, 스토어 찜하기, 스토어 정보 수정하기
+  ![CleanShot 2023-05-25 at 16 47 10](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/2512717d-1987-4aef-84a1-8f3c6cb8b0a5)
   
 
+  ![CleanShot 2023-05-25 at 16 48 06](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/b75b299f-bd56-432f-89ee-b7a748d291c4)
+
+  ![CleanShot 2023-05-25 at 16 48 51](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/d5fc357d-834f-4818-97e6-b5f3c99f0374)
+
+  ![CleanShot 2023-05-25 at 16 50 41](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/e52f67d3-6470-44e3-b8c8-a05c438b6565)
+
+ 
+  ![CleanShot 2023-05-25 at 18 26 29](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/f9e2d8ff-eaa7-48a0-9789-4bc874e58fba)
+
+   ### 상품 결제하기
+  ![CleanShot 2023-05-25 at 18 29 00](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/92ac9b4f-0989-4c1d-a6a6-c1ef41d908ec)
+
+  
 <br>
 
 ---
