@@ -11,7 +11,7 @@
 
 - <a href="https://www.youtube.com/watch?v=UDNfYsCpGR4">📎 구동 영상</a>
   
-- <a href="https://url.kr/8gparh">📎 회고록 </a>
+- <a href="https://velog.io/@yellowbutter0327/VVOLTMARKET%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%ED%9A%8C%EA%B3%A0">📎 회고록 </a>
   
 - <a href="https://alive-cucumber-b08.notion.site/VVolt-Market-561ecc1ebce149db9685741a645699ce">📎 notion</a>
 
@@ -107,6 +107,9 @@
    ### 상품 결제하기
   ![CleanShot 2023-05-25 at 18 29 00](https://github.com/yellowbutter0327/39-2nd-VVolt-Market-frontend/assets/103365467/92ac9b4f-0989-4c1d-a6a6-c1ef41d908ec)
 
+  
+  
+  ### <a href="https://velog.io/@yellowbutter0327/VVOLTMARKET%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%ED%9A%8C%EA%B3%A0">📎 회고록 </a>
   
 <br>
 
