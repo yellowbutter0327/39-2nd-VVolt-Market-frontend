@@ -73,7 +73,7 @@ const ProductCard = ({
               } else {
                 //찜 취소
                 fetch(`${APIS.ipAddress}/likes/${productId}`, {
-                  method: 'post',
+                  method: 'delete',
                   headers: {
                     'Content-Type': 'application/json;charset=utf-8',
                     authorization: localStorage.getItem('TOKEN'),
@@ -83,7 +83,7 @@ const ProductCard = ({
                   }),
                 })
                   .then(res => {
-                    if (res.status === 201) {
+                    if (res.status === 200) {
                       alert('찜목록에서 제거되었습니다.');
                       setProductDetail({
                         ...productDetail,
@@ -111,7 +111,6 @@ const ProductCard = ({
   );
 };
 
-//왼쪽 상품 배너
 const ProductCardWrap = styled.div`
   position: relative;
   padding-left: 468px;
